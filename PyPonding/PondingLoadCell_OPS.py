@@ -1,6 +1,6 @@
 from math import sin,cos,atan2,sqrt
 from . import PondingLoadCell2d, PondingLoadCell3d
-from . import opensees as ops
+import openseespy.opensees as ops
 
 class NodeEnd2d:
     y_offset = 0.
