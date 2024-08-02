@@ -161,7 +161,7 @@ class wf:
             iy = self.zi+(self.zj-self.zi)*x_over_L
             if self.c != 0:
                 r = (self.c**2 + (self.L/2)**2)/(2*self.c)
-                iy += sqrt(r**2 - (self.L*x_over_L - self.L/2)**2) + (self.c-r)
+                iy += np.sqrt(r**2 - (self.L*x_over_L - self.L/2)**2) + (self.c-r)
             ops.node(i, ix, iy)
 
         # set boundary condition
