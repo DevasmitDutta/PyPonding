@@ -3,11 +3,12 @@ from math import pi, ceil
 from PyPonding import PondingLoadCell2d_OPS
 from PyPonding.structures import steel_beam
 
-from .. import opensees as ops
+import openseespy.opensees as ops
 
 class wf:
     geomTransfType = 'Corotational'
     extra_results = False
+
 
     def __init__(self, d, tw, bf, tf, Fy, E, Hk):
         self.d = d             # Depth
@@ -219,7 +220,7 @@ class wf:
                 zo = iz
             print(f"node {i}: {ops.nodeDisp(i, 2)}")
 
-        exit()
+        # exit()
         
         # Initilize data        
         data_volume = np.zeros((self.num_steps+1,1))

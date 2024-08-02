@@ -2,7 +2,7 @@ import openseespy.opensees as ops
 from math import pi,cos,cosh,ceil
 import numpy as np
 import matplotlib.pyplot as plt
-from PyPonding.structures import wf,wf_shapes
+from PyPonding.structures import wf#,wf_shapes
 
   
 # Define units
@@ -33,11 +33,17 @@ qD      = 10.0*psf
 
     
 # Lookup shape data
-shape_data = wf_shapes[shape_name]
-d  = shape_data['d']*inch
-bf = shape_data['bf']*inch
-tf = shape_data['tf']*inch
-tw = shape_data['tw']*inch
+# shape_data = wf_shapes[shape_name]
+# d  = shape_data['d']*inch
+# bf = shape_data['bf']*inch
+# tf = shape_data['tf']*inch
+# tw = shape_data['tw']*inch
+d  = 13.7;#shape_data['d']*inch
+bf = 5;#shape_data['bf']*inch
+tf = 0.335; #shape_data['tf']*inch
+tw = 0.23; #shape_data['tw']*inch
+Ix = 195; #shape_data['Ix']*inch**4
+Zx = 32.7;#shape_data['Zx']*inch**3
 
 # Create wide-flange object
 wf_section = wf(d,tw,bf,tf,Fy,E,Hk)

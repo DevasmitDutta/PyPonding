@@ -2,8 +2,8 @@ import openseespy.opensees as ops
 from math import pi,cos,cosh,ceil
 import numpy as np
 import matplotlib.pyplot as plt
-from wide_flange import wf,wf_shapes
-
+from PyPonding.structures.wide_flange import wf
+# from PyPonding.structures import wf_shapes
   
 # Define units
 inch = 1.0
@@ -30,13 +30,13 @@ gamma   = 62.4*pcf
 
 
 # Lookup shape data
-shape_data = wf_shapes[shape_name]
-d  = shape_data['d']*inch
-bf = shape_data['bf']*inch
-tf = shape_data['tf']*inch
-tw = shape_data['tw']*inch
-Ix = shape_data['Ix']*inch**4
-Zx = shape_data['Zx']*inch**3
+# shape_data = wf_shapes[shape_name]
+d  = 13.7;#shape_data['d']*inch
+bf = 5;#shape_data['bf']*inch
+tf = 0.335; #shape_data['tf']*inch
+tw = 0.23; #shape_data['tw']*inch
+Ix = 195; #shape_data['Ix']*inch**4
+Zx = 32.7;#shape_data['Zx']*inch**3
 
 Mp = Fy*Zx
 
