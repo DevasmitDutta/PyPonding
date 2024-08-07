@@ -7,6 +7,7 @@ import openseespy.opensees as ops
 
 from math import pi,cos,cosh,ceil,log
 from scipy.stats import norm
+import pandas as pd
 import scipy.stats
 
 sys.path.append('/../../../PyPonding/')
@@ -41,8 +42,8 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
         # self.dxJ = ops.nodeDisp(self.nodeJ,1)
         self.dyJ = ops.nodeDisp(self.nodeJ,2)
 
-        
-def doPondingAnalysis(shape_name,L,slope,qD,label):
+upper_limit = 0        
+def fragility_assessment_copy(shape_name,L,slope,qD,label):
 
     # For creating a certain figure
     np.random.seed(15)
@@ -64,6 +65,7 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     gamma   = 62.4*pcf
 
     gal = 0.133681*ft**3
+    cnt_fail = 0
 
 
     material_type = 'Elastic'
@@ -80,12 +82,21 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     locations = ['Denver','New York','New Orleans']
     rate = {}
     perc95 = {}
-    rate['Denver'] = 1.26*inch/(0.25*hr)
-    perc95['Denver'] = 1.72*inch/(0.25*hr)
-    rate['New York'] = 1.67*inch/(0.25*hr)
-    perc95['New York'] = 2.33*inch/(0.25*hr)
-    rate['New Orleans'] = 2.33*inch/(0.25*hr)
-    perc95['New Orleans'] = 3.11*inch/(0.25*hr)
+    df = pd.read_csv('studies/reliability/final_precipitation_intensity_data.xlsx - Sheet1.csv')
+    intensity = df['x1hr']
+    rate['Denver'] = np.mean(intensity)
+    perc95['Denver'] = np.quantile(intensity,0.95)
+    u_4 = norm.ppf(1 - 0.5)
+    rate['New York'] = np.mean(intensity)
+    perc95['New York'] = np.quantile(intensity,0.95)
+    u_5 = norm.ppf(1 - 0.5)
+    rate['New Orleans'] = np.mean(intensity)
+    perc95['New Orleans'] = np.quantile(intensity,0.95)
+    u_6 = norm.ppf(1 - 0.5)
+    # rate['New York'] = 1.67*inch/(0.25*hr)
+    # perc95['New York'] = 2.33*inch/(0.25*hr)
+    # rate['New Orleans'] = 2.33*inch/(0.25*hr)
+    # perc95['New Orleans'] = 3.11*inch/(0.25*hr)
     
     # "Drag coefficient" in scupper flow equation
     cd = 0.6
@@ -107,11 +118,11 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     #nsteps = 1000
     
     # Number of Monte Carlo trials
-    Ntrials = 1000
+    Ntrials = 2000
     #Ntrials = 200
-    Ntrials = 99
-    Ntrials = 1
-    Ntrials = 200
+    # Ntrials = 99
+    # Ntrials = 1
+    # Ntrials = 500
     
     # From function input
     wfs = wide_flange_database[shape_name]
@@ -326,7 +337,8 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
 
     plt.figure()
     plt.subplot(2,1,1)
-    
+    # u_4 = intensity.quantile(0.95)      
+
     for j in range(Ntrials+1):
         print(j,label)
         
@@ -336,13 +348,21 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
         # 1. Create random values in standard normal space
         jj = 0
         for rv in ops.getRVTags():
-            u[jj] = norm.ppf(np.random.rand())
-            if j == Ntrials: 
-                u[jj] = 0 # mean realizations
+            if jj!=4 and jj!=5 and jj!=6:
+                u[jj] = norm.ppf(np.random.rand())   
+            elif jj == 4:
+                u[jj] = u_4
+            elif jj == 5:
+                u[jj] = u_5
+            elif jj == 6:
+                u[jj] = u_6;          
+            # if j == Ntrials: 
+            #     u[jj] = 0 # mean realizations
             jj = jj+1
 
         # 2. Transform to real space
         x = ops.transformUtoX(*u)
+        print('x for trial %d %s %s %s' % (j, x, u, [u_4]))
 
         # 3. Update parameters with random realizations
         jj = 0
@@ -466,15 +486,28 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
         lw = 0.1
         ls = 'grey'
         label = 'Safe Trial'
-        if max(data_height) < 16.5:
-            lw = 1.5
-            ls = 'k'
-            label = 'Fail Trial'
-        plt.plot(data_volume[:end_step]/(Ss*L)*25.4,data_height[:end_step]*25.4,ls,linewidth=lw,label=label)
         method = 'DAMP'
         city = 'Denver'
         ds = zw_lim[method] - dhnom[city]
-        plt.plot([0,8*25.4],[(ds+dh)*25.4,(ds+dh)*25.4],'r--',linewidth=0.011,label='Design Limit')
+        print('x[4]',x[4])
+        q = x[5-1]*As
+        dh = (1.5*q/(cd*ws*(2*g)**0.5))**(2.0/3)
+        print('dh',dh)
+        if max(data_height) < ds + dh:
+            lw = 1.5
+            ls = 'k'
+            label = 'Fail Trial'
+            cnt_fail += 1
+        if label=='Fail Trial':
+           plt.plot(data_volume[:end_step]/(Ss*L)*25.4,data_height[:end_step]*25.4,ls,linewidth=lw)
+           upper_limit = ds+dh
+        else:
+            plt.plot(data_volume[:end_step]/(Ss*L)*25.4,data_height[:end_step]*25.4,ls,linewidth=lw)
+            upper_limit = ds+dh
+        # method = 'DAMP'
+        # city = 'Denver'
+        # ds = zw_lim[method] - dhnom[city]
+        # plt.plot([0,8*25.4],[(ds+dh)*25.4,(ds+dh)*25.4],'r--',linewidth=0.011,label='Design Limit')
         # plt.show()
         output.write(f'{max(data_height)}')
         output.write('\n')
@@ -494,13 +527,16 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     # Remove random variables bc ops.wipe() doesn't do this yet
     ops.wipeReliability()
 
-    print('zw_lim \n',zw_lim);
-    print('dhnom \n',dhnom);
-    print('ds \n',ds);
+    print('zw_lim',zw_lim);
+    print('dhnom',dhnom);
+    print('ds',ds);
+    print('dh',dh)
     print('ds + dhnom',ds+dhnom['Denver']);
     print('ds + dh',ds+dh);
     # plt.rcParams['text.usetex'] = False
-    plt.plot([0,8*25.4],[16.171947008029*25.4,16.171947008029*25.4],'b--',label='Design Limit-2')
+    # plt.plot([0,8*25.4],[16.171947008029*25.4,16.171947008029*25.4],'b--',label='Design Limit-2')
+    plt.plot([0,8*25.4],[upper_limit*25.4,upper_limit*25.4],'r--',linewidth=1.1,label='Design Limit')
+    plt.title('Pf = %f, for i = %s' % (cnt_fail/Ntrials, x[4]))
     plt.xlim(left=0,right=175)
     plt.ylim(bottom=0)
     plt.legend(ncol=2,frameon=False)
