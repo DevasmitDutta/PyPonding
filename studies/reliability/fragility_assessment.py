@@ -42,7 +42,7 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
         self.dyJ = ops.nodeDisp(self.nodeJ,2)
 
         
-def doPondingAnalysis(shape_name,L,slope,qD,label):
+def fragility_assessment(shape_name,L,slope,qD,label):
 
     # For creating a certain figure
     np.random.seed(15)
@@ -84,6 +84,7 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     perc95['Denver'] = 1.72*inch/(0.25*hr)
     rate['New York'] = 1.67*inch/(0.25*hr)
     perc95['New York'] = 2.33*inch/(0.25*hr)
+    
     rate['New Orleans'] = 2.33*inch/(0.25*hr)
     perc95['New Orleans'] = 3.11*inch/(0.25*hr)
     
@@ -111,7 +112,7 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     #Ntrials = 200
     Ntrials = 99
     Ntrials = 1
-    Ntrials = 200
+    Ntrials = 500
     
     # From function input
     wfs = wide_flange_database[shape_name]
@@ -324,6 +325,10 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     # rc('text',usetex=True)
     # rc('font',family='serif')
 
+    u_4 = norm.ppf(0.95);      
+    u_5 = norm.ppf(0.95);   
+    u_6 = norm.ppf(0.95);
+
     plt.figure()
     plt.subplot(2,1,1)
     
@@ -336,13 +341,21 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
         # 1. Create random values in standard normal space
         jj = 0
         for rv in ops.getRVTags():
-            u[jj] = norm.ppf(np.random.rand())
-            if j == Ntrials: 
-                u[jj] = 0 # mean realizations
+            if jj!=4 and jj!=5 and jj!=6:
+                u[jj] = norm.ppf(np.random.rand())   
+            elif jj == 4:
+                u[jj] = u_4;
+            elif jj == 5:
+                u[jj] = u_5;
+            elif jj == 6:
+                u[jj] = u_6;           
+            # if j == Ntrials: 
+            #     u[jj] = 0 # mean realizations
             jj = jj+1
 
         # 2. Transform to real space
         x = ops.transformUtoX(*u)
+        print('x for trial %d %s %s %s' % (j, x, u, [u_4,u_5,u_6]))
 
         # 3. Update parameters with random realizations
         jj = 0
@@ -466,14 +479,21 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
         lw = 0.1
         ls = 'grey'
         label = 'Safe Trial'
-        if max(data_height) < 16.5:
+        method = 'DAMP'
+        city = 'Denver'
+        ds = zw_lim[method] - dhnom[city]
+        print('x[4]',x[4])
+        q = x[5-1]*As
+        dh = (1.5*q/(cd*ws*(2*g)**0.5))**(2.0/3)
+        print('dh',dh)
+        if max(data_height) < ds + dh:
             lw = 1.5
             ls = 'k'
             label = 'Fail Trial'
         plt.plot(data_volume[:end_step]/(Ss*L)*25.4,data_height[:end_step]*25.4,ls,linewidth=lw,label=label)
-        method = 'DAMP'
-        city = 'Denver'
-        ds = zw_lim[method] - dhnom[city]
+        # method = 'DAMP'
+        # city = 'Denver'
+        # ds = zw_lim[method] - dhnom[city]
         plt.plot([0,8*25.4],[(ds+dh)*25.4,(ds+dh)*25.4],'r--',linewidth=0.011,label='Design Limit')
         # plt.show()
         output.write(f'{max(data_height)}')
@@ -494,9 +514,10 @@ def doPondingAnalysis(shape_name,L,slope,qD,label):
     # Remove random variables bc ops.wipe() doesn't do this yet
     ops.wipeReliability()
 
-    print('zw_lim \n',zw_lim);
-    print('dhnom \n',dhnom);
-    print('ds \n',ds);
+    print('zw_lim',zw_lim);
+    print('dhnom',dhnom);
+    print('ds',ds);
+    print('dh',dh)
     print('ds + dhnom',ds+dhnom['Denver']);
     print('ds + dh',ds+dh);
     # plt.rcParams['text.usetex'] = False

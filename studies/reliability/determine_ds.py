@@ -1,7 +1,8 @@
 from math import pi,cos,cosh,ceil,sqrt
 import numpy as np
 import matplotlib.pyplot as plt
-from wide_flange import wf,wf_shapes
+from PyPonding.structures.wide_flange import wf
+from libdenavit.section.database import wide_flange_database
 from PyPonding import FE
   
 # Define units
@@ -37,7 +38,7 @@ qD      = 15.0*psf
 
   
 # Lookup shape data
-shape_data = wf_shapes[shape_name]
+shape_data = wide_flange_database[shape_name]
 d  = shape_data['d']*inch
 bf = shape_data['bf']*inch
 tf = shape_data['tf']*inch
