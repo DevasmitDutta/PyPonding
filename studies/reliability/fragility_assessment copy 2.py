@@ -11,7 +11,6 @@ from scipy.stats import norm
 import pandas as pd
 import scipy.stats
 from scipy.stats import gumbel_r
-import seaborn as sns
 import os
 
 import numpy as np
@@ -99,11 +98,10 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
     # Euler-Mascheroni constant
     eulergamma = 0.5772156649
 
-    # Calculate mean and stdv based on the provided formula
+    # Calculate the scale parameter and define mean and standard deviation for each duration
+    scale = {}
     mean = {}
     stdv = {}
-    scale = {}
-
     for duration in durations:
         rate = intensities[duration].mean()
         perc95 = intensities[duration].quantile(0.95)
@@ -111,46 +109,14 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
         mean[duration] = rate
         stdv[duration] = (scale[duration] * (6**0.5)) / np.pi
 
-    # Plot the empirical PDF and Gumbel PDF for each duration
-    plt.figure(figsize=(14, 10))
-
-    for i, duration in enumerate(durations):
-        plt.subplot(2, 3, i + 1)
-        
-        # Generate the Gumbel distribution
-        rv = gumbel_r(loc=mean[duration], scale=stdv[duration])
-        
-        # Generate x values
-        x = np.linspace(rv.ppf(1e-6), rv.ppf(1 - 1e-6), 100)
-        
-        # Plot the Gumbel PDF
-        plt.plot(x, rv.pdf(x), lw=2, label=f'Gumbel PDF {duration}')
-        
-        # Plot the empirical PDF as a histogram
-        sns.histplot(intensities[duration], kde=False, stat='density', bins=30, label='Empirical PDF', color='blue', alpha=0.6)
-        
-        # # Plot the dataset of intensities
-        # plt.scatter(intensities[duration], [0] * len(intensities[duration]), label=f'{duration} Intensities', color='red')
-        
-        # Add titles and labels
-        plt.title(f'Empirical PDF for {duration}')
-        plt.xlabel('Intensity')
-        plt.ylabel('Density')
-        plt.legend()
-
-    # Adjust layout and show the plot
-    plt.tight_layout()
-    plt.show()
-
     # Plot the Gumbel distribution and dataset of intensities
     plt.figure(figsize=(12, 8))
-
     for duration in durations:
         # Generate the Gumbel distribution
         rv = gumbel_r(loc=mean[duration], scale=stdv[duration])
         
         # Generate x values
-        x = np.linspace(rv.ppf(1e-6), rv.ppf(1 - 1e-6), 100)
+        x = np.linspace(rv.ppf(0.01), rv.ppf(0.99), 100)
         
         # Plot the PDF
         plt.plot(x, rv.pdf(x), lw=2, label=f'Gumbel PDF {duration}')
@@ -165,7 +131,7 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
     plt.legend(loc='best')
 
     # Show the plot
-    plt.show()
+    plt.show()                        
 
     # Hourly rainfall rate (in/hr)
     locations = ['Denver','New York','New Orleans']
@@ -177,13 +143,13 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
     perc95['Denver'] = np.quantile(intensity,0.95)
     print('100 percentile')
     print(np.quantile(intensity,1))
-    u_4 = norm.ppf(1 - 1e-8)
+    u_4 = norm.ppf(1 - 1e-2)
     rate['New York'] = np.mean(intensity)
     perc95['New York'] = np.quantile(intensity,0.95)
-    u_5 = norm.ppf(1 - 1e-8)
+    u_5 = norm.ppf(1 - 1e-2)
     rate['New Orleans'] = np.mean(intensity)
     perc95['New Orleans'] = np.quantile(intensity,0.95)
-    u_6 = norm.ppf(1 - 1e-8)
+    u_6 = norm.ppf(1 - 1e-2)
     # rate['New York'] = 1.67*inch/(0.25*hr)
     # perc95['New York'] = 2.33*inch/(0.25*hr)
     # rate['New Orleans'] = 2.33*inch/(0.25*hr)
@@ -331,23 +297,6 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
         loc[city] = rate[city] - scale[city]*eulergamma
         #ops.randomVariable(rateRVTag,'type1LargestValue','-parameters',loc,scale)
         ops.randomVariable(rateRVTag,'type1LargestValue','-mean',rate[city],'-stdv',(scale[city]*6**0.5)/pi)
-
-        # # Define parameters
-        # mean = rate[city]
-        # stdv = (scale[city] * (6**0.5)) / np.pi
-        # # Generate the Gumbel distribution
-        # rv = gumbel_r(loc=mean, scale=stdv)
-
-        # # Generate x values
-        # x = np.linspace(rv.ppf(0.01), rv.ppf(0.99), 100)
-
-        # # Plot the PDF
-        # plt.plot(x, rv.pdf(x), 'r-', lw=2, label='gumbel_r pdf')
-        # plt.title('Type I Largest Value Distribution (Gumbel)')
-        # plt.xlabel('Value')
-        # plt.ylabel('Probability Density')
-        # plt.legend(loc='best')
-        # plt.show()
 
         ops.parameter(rateRVTag)
         ops.updateParameter(rateRVTag,rate[city])
