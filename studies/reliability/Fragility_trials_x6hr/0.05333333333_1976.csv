@@ -1,0 +1,3 @@
+W14X22, L = 20.0 in, slope = 0.25 in/in, dead load = 20 kip/in^2
+zwlim AISC Appendix 2,zwlim DAMP,zwlim Proposed for ASCE 7,zwlim Neglect Ponding,dhnom Denver,dhnom New York,dhnom New Orleans,dh Denver,dh New York,dh New Orleans,dmax
+nan,nan,nan,nan,0.6459355241515348,

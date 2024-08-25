@@ -127,7 +127,7 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label):
         plt.plot(x, rv.pdf(x), lw=2, label=f'Gumbel PDF {duration}')
         
         # Plot the empirical PDF as a histogram
-        sns.histplot(intensities[duration], kde=False, stat='density', bins=30, label='Empirical PDF', color='blue', alpha=0.6)
+        sns.histplot(intensities[duration], kde=False, stat='density', bins=5, label='Empirical PDF', color='blue', alpha=0.6)
         
         # # Plot the dataset of intensities
         # plt.scatter(intensities[duration], [0] * len(intensities[duration]), label=f'{duration} Intensities', color='red')
