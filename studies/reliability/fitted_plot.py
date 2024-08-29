@@ -12,7 +12,6 @@ def fragility_fit(choice):
     if choice == 'LAX':
        
         durations = ['x1hr','x2hr','x3hr','x6hr','x12hr','x24hr']
-        # durations = ['x0.25hr','x0.5hr','x0.75hr','x1hr','x2hr','x3hr']
         num_durations = len(durations)
 
         # Define a dark color palette
@@ -38,42 +37,8 @@ def fragility_fit(choice):
                 # num_gms = np.ones(len(data_1[duration].values),1) * 200
                 num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
 
-                # Define the log-likelihood function as per Equation (1) in Baker (2015)
-                def log_likelihood(params, IM, num_collapse, num_gms):
-                    # ** Penalize any negative beta with a very large loglik value **
-                    if params[1] < 0:
-                        return 1e10
-                
-                    mu, sigma = params
-                    p = norm.cdf(np.log(IM), loc=mu, scale=sigma)
-                    
-                    # # Replace zeros in p with a small positive number to avoid log(0)
-                    # p[p == 0] = np.finfo(float).tiny
-                    
-                    # log_lik = -np.sum(num_collapse * np.log(p) + (num_gms - num_collapse) * np.log(1 - p))
-
-                    # Likelihood of observing num_collapse collapses, given num_gms observations
-                    likelihood = binom.pmf(num_collapse, num_gms, p)
-
-                    # ** Cannot have zero likelihood value, so replace every zero likelihood 
-                    # value with the smallest positive normalized fixed-point value **
-                    likelihood[likelihood == 0] = np.finfo(float).tiny
-                    
-                    # Sum negative log likelihood (we take the negative value because we want
-                    # the maximum log likelihood, and the function is searching for a minimum)
-                    log_lik = -np.sum(np.log(likelihood))
-
-                    return log_lik
-
-                # Initial guess for parameters [mu, sigma]
-                initial_guess = [np.mean(np.log(IM)), np.std(np.log(IM))]
-
-                # Minimize the negative log-likelihood
-                result = minimize(log_likelihood, initial_guess, args=(IM, num_collapse, num_gms), method='Nelder-Mead')
-                mu_opt, sigma_opt = result.x
-
                 # Use the fn_mle_pc function to get the optimized parameters
-                # mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
+                mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
 
                 # Scatter plot of observed data points with smaller triangle markers
                 plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
@@ -112,44 +77,10 @@ def fragility_fit(choice):
             # num_gms = np.ones(len(data_1[duration].values),1) * 200
             num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
 
-            # Define the log-likelihood function as per Equation (1) in Baker (2015)
-            def log_likelihood(params, IM, num_collapse, num_gms):
-                # ** Penalize any negative beta with a very large loglik value **
-                if params[1] < 0:
-                    return 1e10
-            
-                mu, sigma = params
-                p = norm.cdf(np.log(IM), loc=mu, scale=sigma)
-                
-                # # Replace zeros in p with a small positive number to avoid log(0)
-                # p[p == 0] = np.finfo(float).tiny
-                
-                # log_lik = -np.sum(num_collapse * np.log(p) + (num_gms - num_collapse) * np.log(1 - p))
-
-                # Likelihood of observing num_collapse collapses, given num_gms observations
-                likelihood = binom.pmf(num_collapse, num_gms, p)
-
-                # ** Cannot have zero likelihood value, so replace every zero likelihood 
-                # value with the smallest positive normalized fixed-point value **
-                likelihood[likelihood == 0] = np.finfo(float).tiny
-                
-                # Sum negative log likelihood (we take the negative value because we want
-                # the maximum log likelihood, and the function is searching for a minimum)
-                log_lik = -np.sum(np.log(likelihood))
-
-                return log_lik
-
-            # Initial guess for parameters [mu, sigma]
-            initial_guess = [np.mean(np.log(IM)), np.std(np.log(IM))]
-
-            # Minimize the negative log-likelihood
-            result = minimize(log_likelihood, initial_guess, args=(IM, num_collapse, num_gms), method='Nelder-Mead')
-            mu_opt, sigma_opt = result.x
-
             # Use the fn_mle_pc function to get the optimized parameters
-            # mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
+            mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
 
-            # # Scatter plot of observed data points with smaller triangle markers
+            # Scatter plot of observed data points with smaller triangle markers
             # plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
 
             # Generate IM values for plotting the fitted curve
@@ -197,42 +128,8 @@ def fragility_fit(choice):
                 # num_gms = np.ones(len(data_1[duration].values),1) * 200
                 num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
 
-                # Define the log-likelihood function as per Equation (1) in Baker (2015)
-                def log_likelihood(params, IM, num_collapse, num_gms):
-                    # ** Penalize any negative beta with a very large loglik value **
-                    if params[1] < 0:
-                        return 1e10
-                
-                    mu, sigma = params
-                    p = norm.cdf(np.log(IM), loc=mu, scale=sigma)
-                    
-                    # # Replace zeros in p with a small positive number to avoid log(0)
-                    # p[p == 0] = np.finfo(float).tiny
-                    
-                    # log_lik = -np.sum(num_collapse * np.log(p) + (num_gms - num_collapse) * np.log(1 - p))
-
-                    # Likelihood of observing num_collapse collapses, given num_gms observations
-                    likelihood = binom.pmf(num_collapse, num_gms, p)
-
-                    # ** Cannot have zero likelihood value, so replace every zero likelihood 
-                    # value with the smallest positive normalized fixed-point value **
-                    likelihood[likelihood == 0] = np.finfo(float).tiny
-                    
-                    # Sum negative log likelihood (we take the negative value because we want
-                    # the maximum log likelihood, and the function is searching for a minimum)
-                    log_lik = -np.sum(np.log(likelihood))
-
-                    return log_lik
-
-                # Initial guess for parameters [mu, sigma]
-                initial_guess = [np.mean(np.log(IM)), np.std(np.log(IM))]
-
-                # Minimize the negative log-likelihood
-                result = minimize(log_likelihood, initial_guess, args=(IM, num_collapse, num_gms), method='Nelder-Mead')
-                mu_opt, sigma_opt = result.x
-
                 # Use the fn_mle_pc function to get the optimized parameters
-                # mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
+                mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
 
                 # Scatter plot of observed data points with smaller triangle markers
                 plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
@@ -271,42 +168,8 @@ def fragility_fit(choice):
             # num_gms = np.ones(len(data_1[duration].values),1) * 200
             num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
 
-            # Define the log-likelihood function as per Equation (1) in Baker (2015)
-            def log_likelihood(params, IM, num_collapse, num_gms):
-                # ** Penalize any negative beta with a very large loglik value **
-                if params[1] < 0:
-                    return 1e10
-            
-                mu, sigma = params
-                p = norm.cdf(np.log(IM), loc=mu, scale=sigma)
-                
-                # # Replace zeros in p with a small positive number to avoid log(0)
-                # p[p == 0] = np.finfo(float).tiny
-                
-                # log_lik = -np.sum(num_collapse * np.log(p) + (num_gms - num_collapse) * np.log(1 - p))
-
-                # Likelihood of observing num_collapse collapses, given num_gms observations
-                likelihood = binom.pmf(num_collapse, num_gms, p)
-
-                # ** Cannot have zero likelihood value, so replace every zero likelihood 
-                # value with the smallest positive normalized fixed-point value **
-                likelihood[likelihood == 0] = np.finfo(float).tiny
-                
-                # Sum negative log likelihood (we take the negative value because we want
-                # the maximum log likelihood, and the function is searching for a minimum)
-                log_lik = -np.sum(np.log(likelihood))
-
-                return log_lik
-
-            # Initial guess for parameters [mu, sigma]
-            initial_guess = [np.mean(np.log(IM)), np.std(np.log(IM))]
-
-            # Minimize the negative log-likelihood
-            result = minimize(log_likelihood, initial_guess, args=(IM, num_collapse, num_gms), method='Nelder-Mead')
-            mu_opt, sigma_opt = result.x
-
             # Use the fn_mle_pc function to get the optimized parameters
-            # mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
+            mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
 
             # # Scatter plot of observed data points with smaller triangle markers
             # plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
@@ -329,4 +192,4 @@ def fragility_fit(choice):
         # Show the plot
         plt.show()
 
-fragility_fit('LAX')
+fragility_fit('SB')

@@ -23,10 +23,13 @@ def fn_mle_pc(IM, num_gms, num_collapse):
 
     # Run optimization
     result = minimize(mlefit, x0, args=(num_gms, num_collapse, IM), 
-                      options={'maxiter': 1000}, method='Nelder-Mead')
+                    #   options={'maxiter': 1000}, 
+                      method='Nelder-Mead')
 
     # Extract optimized parameters
-    theta = np.exp(result.x[0])  # return theta in linear space
+    # theta = np.exp(result.x[0])  # return theta in linear space
+
+    theta = result.x[0]  
     beta = result.x[1]
 
     return theta, beta
