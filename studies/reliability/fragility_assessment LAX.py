@@ -53,15 +53,60 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
 
 upper_limit = 0    
 # output = open(f'studies/reliability/trials{1976}.csv','w')
+import numpy as np
+from scipy.interpolate import interp1d
+
+def data_transform_interpolation(data, target_min=0.1, target_max=1.5, num_points=100):
+    """
+    Transforms the input data to a specified range [target_min, target_max]
+    using interpolation and ensures that the sample mean of the transformed data
+    matches the original dataset's mean without clipping.
+
+    Parameters:
+    data (numpy array): The input data array to be transformed.
+    target_min (float): The minimum value of the target range. Default is 0.1.
+    target_max (float): The maximum value of the target range. Default is 1.5.
+    num_points (int): The number of data points in the transformed dataset. Default is 100.
+
+    Returns:
+    numpy array: The transformed data array with the original mean preserved.
+    """
+    
+    # Step 1: Normalize the data (rescale to [0, 1])
+    data_min = np.min(data)
+    data_max = np.max(data)
+    normalized_data = (data - data_min) / (data_max - data_min)
+
+    # Step 2: Define interpolation scheme
+    x_old = np.linspace(0, 1, len(normalized_data))  # Old index for current data points
+    x_new = np.linspace(0, 1, num_points)  # New index for num_points
+    interpolator = interp1d(x_old, normalized_data, kind='linear')
+
+    # Step 3: Interpolate to get new data points
+    interpolated_data = interpolator(x_new)
+
+    # Step 4: Scale interpolated data to the target range [0.1, 1.5]
+    scaled_data = interpolated_data * (target_max - target_min) + target_min
+
+    # # Step 5: Adjust to match the sample mean of the original dataset
+    # mean_data = np.mean(data)
+    # mean_scaled = np.mean(scaled_data)
+
+    # # Adjust by shifting to match the original mean
+    # transformed_data = scaled_data - mean_scaled + mean_data
+
+    transformed_data = scaled_data
+
+    return transformed_data
 
 def run_analysis(shape_name,L,slope,qD,label):
-
 
      # Load the dataset
     data = pd.read_csv(os.path.join(os.getcwd(),'studies/reliability/LAX/final_precipitation_intensity_data.xlsx - Sheet1.csv'))
 
     # Extract the durations and intensities
-    durations = ['x1hr','x2hr','x3hr','x6hr','x12hr']
+    # 'x1hr','x2hr','x3hr','x6hr','x12hr'
+    durations = ['x1hr','x2hr','x3hr','x6hr','x12hr','x24hr']
     # intensities = data[durations].sort_values(by=durations[0], ascending=True)[durations[0]].values
     # print('intensities',intensities)
 
@@ -75,20 +120,27 @@ def run_analysis(shape_name,L,slope,qD,label):
 
         intensities = data[duration][~np.isnan(data[duration])].sort_values(ascending=True).values
         i_variable = intensities
+        # X_bar = np.mean(i_variable)
+        # Y_bar = np.mean(np.linspace(0.1,1.5,100))
+        # factor = X_bar - Y_bar
+        i_variable_2 = np.linspace(0.1,1.5,100)
+        # i_variable_2 = data_transform_interpolation(i_variable, 0.1, 1.5)
+        # print(i_variable_2)
+        # print("Original Mean:", np.mean(i_variable))
+        # print("Transformed Mean:", np.mean(i_variable_2))
+        # break
         fragility_data_points = open(f'studies/reliability/LAX/Fragility_trials_{duration}/fragility_data_points{1976}.csv','w')
         fragility_data_points.write(f'{duration},')  
         fragility_data_points.write('\n')
 
-        for IM in i_variable:
+        for IM in i_variable_2:
         #    print('shape_name',shape_name,'L',L,'slope',slope,'qD',qD,'label',label)
         #    break
-           print('intensity',IM)
-        #    break
+        #    print('intensity',IM)
            output = open(f'studies/reliability/LAX/Fragility_trials_{duration}/{IM}_{1976}.csv','w')
            fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, duration, fragility_data_points)
 
         fragility_data_points.close()       
-   
 
 def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, duration, fragility_data_points):
 

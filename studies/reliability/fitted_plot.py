@@ -32,7 +32,8 @@ def fragility_fit(choice):
                 intensities = data_2[duration][~np.isnan(data_2[duration])].sort_values(ascending=True).values
 
                 # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
-                IM = intensities
+                # IM = intensities
+                IM = np.linspace(0.1,1.5,100)
                 num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
                 # num_gms = np.ones(len(data_1[duration].values),1) * 200
                 num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
@@ -52,7 +53,7 @@ def fragility_fit(choice):
 
                 # Add labels and title
                 plt.xlabel('IM')
-                plt.ylabel('Probability of Collapse')
+                plt.ylabel('Probability of Failure')
                 plt.title('Theoritical Fragility Function Fitting (1hr duration)- LAX Airport')
                 plt.legend(loc='best', fontsize=8)
                 plt.grid(True)
@@ -72,7 +73,8 @@ def fragility_fit(choice):
             intensities = data_2[duration][~np.isnan(data_2[duration])].sort_values(ascending=True).values
 
             # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
-            IM = intensities
+            # IM = intensities
+            IM = np.linspace(0.1,1.5,100)
             num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
             # num_gms = np.ones(len(data_1[duration].values),1) * 200
             num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
@@ -81,7 +83,7 @@ def fragility_fit(choice):
             mu_opt, sigma_opt = fn_mle_pc(np.transpose(IM), np.transpose(num_gms), np.transpose(num_collapse))
 
             # Scatter plot of observed data points with smaller triangle markers
-            # plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
+            plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
 
             # Generate IM values for plotting the fitted curve
             IM_plot = np.linspace(min(IM), 3, 500)
@@ -92,7 +94,7 @@ def fragility_fit(choice):
 
         # Add labels and title
         plt.xlabel('IM')
-        plt.ylabel('Probability of Collapse')
+        plt.ylabel('Probability of Failure')
         plt.title('Theoritical Fragility Curves - LAX Airport')
         plt.legend(loc='best', fontsize=8)
         plt.grid(True)
@@ -123,7 +125,8 @@ def fragility_fit(choice):
                 intensities = data_2[duration][~np.isnan(data_2[duration])].sort_values(ascending=True).values
 
                 # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
-                IM = intensities
+                # IM = intensities
+                IM = np.linspace(0.1,1.5,100)
                 num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
                 # num_gms = np.ones(len(data_1[duration].values),1) * 200
                 num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
@@ -163,7 +166,8 @@ def fragility_fit(choice):
             intensities = data_2[duration][~np.isnan(data_2[duration])].sort_values(ascending=True).values
 
             # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
-            IM = intensities
+            # IM = intensities
+            IM = np.linspace(0.1,1.5,100)
             num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
             # num_gms = np.ones(len(data_1[duration].values),1) * 200
             num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)

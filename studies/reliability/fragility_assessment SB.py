@@ -77,11 +77,13 @@ def run_analysis(shape_name,L,slope,qD,label):
         # break
         intensities = data[duration][~np.isnan(data[duration])].sort_values(ascending=True).values
         i_variable = intensities
+        i_variable_2 = np.linspace(0.1,1.5,100)
+
         fragility_data_points = open(f'studies/reliability/SB/Fragility_trials_{duration}/fragility_data_points{1976}.csv','w')
         fragility_data_points.write(f'{duration},')  
         fragility_data_points.write('\n')
 
-        for IM in i_variable:
+        for IM in i_variable_2:
         #    print('shape_name',shape_name,'L',L,'slope',slope,'qD',qD,'label',label)
         #    break
            print('intensity',IM)
