@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: libdenavit
+Version: 0.1.1
+Summary: A Python library for strcutural engineering research.
+Home-page: https://github.com/denavit/libdenavit-py
+Author: Mark Denavit
+Author-email: mdenavit@utk.edu
+License: MIT
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+
+
+# LibDenavit [![Badge License]][License] [![Badge University]][University]
+
+*A **Python Library** for **Structural Engineering Research**​*
+
+<br>
+<br>
+<br>
+
+<div align = center>
+
+*Maintained by **Mark Denavit's** research group.*
+
+</div>
+
+<br>
+
+## Install
+
+```sh
+pip install libdenavit
+```
+
+
+<!----------------------------------------------------------------------------->
+
+[Badge University]: https://img.shields.io/badge/University-Tennessee_--_Knoxville-FF8200?style=for-the-badge
+[Badge License]: https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge
+
+[University]: https://www.utk.edu/
+[License]: LICENSE
+
+
+

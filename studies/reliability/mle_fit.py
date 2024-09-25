@@ -10,7 +10,7 @@ def fn_mle_pc(IM, num_gms, num_collapse):
     Inputs:
     IM            1xn           IM levels of interest
     num_gms       1x1 or 1xn    number of ground motions used at each IM level
-    num_collapse 	1xn           number of collapses observed at each IM level
+    num_collapse 	1xn         number of collapses observed at each IM level
     
     Outputs:
     theta         1x1           median of fragility function
@@ -23,7 +23,7 @@ def fn_mle_pc(IM, num_gms, num_collapse):
 
     # Run optimization
     result = minimize(mlefit, x0, args=(num_gms, num_collapse, IM), 
-                    #   options={'maxiter': 1000}, 
+                      options={'maxiter': 1000}, 
                       method='Nelder-Mead')
 
     # Extract optimized parameters
@@ -41,7 +41,7 @@ def mlefit(params, num_gms, num_collapse, IM):
     Inputs:
     params        list          current guess of the parameters [log(theta), beta]
     num_gms       1x1 or 1xn    number of ground motions used at each IM level
-    num_collapse 	1xn           number of collapses observed at each IM level
+    num_collapse 	1xn         number of collapses observed at each IM level
     IM            1xn           IM levels of interest
     
     Outputs:
@@ -55,6 +55,8 @@ def mlefit(params, num_gms, num_collapse, IM):
     # Estimated probabilities of collapse, given the current fragility function
     # parameter estimates
     p = norm.cdf(np.log(IM), loc=params[0], scale=params[1])
+
+    p = np.clip(p, 1e-10, 1 - 1e-10)
 
     # Likelihood of observing num_collapse(i) collapses, given num_gms
     # observations, using the current fragility function parameter estimates

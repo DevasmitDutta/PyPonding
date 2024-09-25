@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: PyPonding
+Version: 1.0.0
+Summary: A Python library for modeling ponding on framed structures.
+Home-page: https://github.com/denavit/PyPonding
+Author: Mark Denavit
+Author-email: mdenavit@utk.edu
+License: MIT
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# PyPonding
+
+*A **Python Library** for modeling ponding on framed structures*
+
+Developed and maintained by **Mark Denavit's** research group at the University of Tennessee, Knoxville.
+
+<br>
+
+## Install
+
+```sh
+pip install PyPonding
+```
+
+[License]: LICENSE
+
+
+
