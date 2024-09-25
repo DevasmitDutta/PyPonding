@@ -1,10 +1,10 @@
 __pycache__/
 *.pyc
 *.egg-info
-# *.csv
-# *.png
+*.csv
+*.png
 *.pdf
-# *.xlsx
+*.xlsx
 *.vtu
 *.DS_Store
 build/
