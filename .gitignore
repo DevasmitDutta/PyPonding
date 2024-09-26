@@ -10,3 +10,4 @@ __pycache__/
 build/
 **/dist
 *.so
+myenv/lib/python3.12/site-packages/openseespylinux/opensees.so
