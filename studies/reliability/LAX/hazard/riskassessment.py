@@ -39,6 +39,7 @@ window_sizes = np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generate
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
 columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
+# columns = ['x1hr', 'x2hr']
 
 # Create an empty DataFrame with the specified rows and columns
 df_collect_pf_exceedance = pd.DataFrame(index=window_sizes, columns=columns)
@@ -84,7 +85,7 @@ def duration_window_wise(window_size, duration):
     random_samples = np.sort(stats.genextreme.rvs(c=shape, loc=loc, scale=scale, size=1000))
     # print(f'Random samples: {random_samples}')
     
-    Pf = np.zeros(1000)
+    Pf = np.zeros(2000)
     cnt = 0
     for (i, IM) in enumerate(random_samples):
         print(f'Entering IM count: {i} with IM: {IM}')
@@ -99,8 +100,13 @@ def duration_window_wise(window_size, duration):
 
         Pf[i] = norm.cdf(np.log(IM), loc=mu_opt, scale=sigma_opt)
         num = np.random.uniform(0, 1)
-        if Pf[i] < num:
+        print(f'Probability of exceedance: {Pf[i]} > Random number: {num}')
+
+        if Pf[i] > num:
+            print('True')
             cnt += 1  
+        else:
+            print('False')
 
     Prob_of_exceedance = cnt/1000
     print(f'Probability of exceedance: {Prob_of_exceedance} in {window_size} years over {duration} duration') 
