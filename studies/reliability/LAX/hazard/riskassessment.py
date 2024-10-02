@@ -38,8 +38,8 @@ f6, sorted_data_6 = ecdf(x24hr)
 window_sizes = np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
-columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
-# columns = ['x1hr', 'x2hr']
+# columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
+columns = ['x1hr']
 
 # Create an empty DataFrame with the specified rows and columns
 df_collect_pf_exceedance = pd.DataFrame(index=window_sizes, columns=columns)
@@ -85,7 +85,8 @@ def duration_window_wise(window_size, duration):
     random_samples = np.sort(stats.genextreme.rvs(c=shape, loc=loc, scale=scale, size=1000))
     # print(f'Random samples: {random_samples}')
     
-    Pf = np.zeros(2000)
+    Pf = np.zeros(1000)
+    threshold_num = np.random.uniform(0, 1, 1000)
     cnt = 0
     for (i, IM) in enumerate(random_samples):
         print(f'Entering IM count: {i} with IM: {IM}')
@@ -99,14 +100,23 @@ def duration_window_wise(window_size, duration):
         sigma_opt = df.loc[df['duration'].str.strip() == duration, 'sigma_opt'].values[0]
 
         Pf[i] = norm.cdf(np.log(IM), loc=mu_opt, scale=sigma_opt)
-        num = np.random.uniform(0, 1)
-        print(f'Probability of exceedance: {Pf[i]} > Random number: {num}')
+        # threshold_num[i] = np.random.uniform(0, 1)
+        print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num[i]}')
 
-        if Pf[i] > num:
+        if Pf[i] < threshold_num[i]:
             print('True')
             cnt += 1  
         else:
             print('False')
+
+    plt.hist(threshold_num, bins=30, edgecolor='black', alpha=0.7)
+    plt.title('Histogram of Uniform Samples')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.show()
+
+    plt.hist(random_samples, bins=1500, edgecolor='black', alpha=0.7)
+    plt.show()
 
     Prob_of_exceedance = cnt/1000
     print(f'Probability of exceedance: {Prob_of_exceedance} in {window_size} years over {duration} duration') 
