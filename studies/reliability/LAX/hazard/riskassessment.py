@@ -36,11 +36,11 @@ f5, sorted_data_5 = ecdf(x12hr)
 f6, sorted_data_6 = ecdf(x24hr)
 
 # Define the list of window sizes (moving window sizes)
-window_sizes = [2, 5, 20, 25, 50, 100, 200, 500, 1000] #np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
+window_sizes = ['2yr', '5yr', '20yr', '25yr', '50yr', '100yr', '200yr', '500yr', '1000yr'] #np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
 # columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
-columns = ['x1hr']
+columns = [0]
 
 # Create an empty DataFrame with the specified rows and columns
 df_collect_pf_exceedance = pd.DataFrame(index=window_sizes, columns=columns)
@@ -59,26 +59,26 @@ plt.figure(figsize=(10, 6))
 
 # Define the function to fit and plot GEV
 def duration_window_wise(window_size, duration):
-    if duration != 'x24hr':
-      max_index = len(x1hr)
-      gev_params = []
-    else:
-      max_index = len(x24hr)
-      gev_params = []
+    # if duration != 'x24hr':
+    #   max_index = len(x1hr)
+    #   gev_params = []
+    # else:
+    #   max_index = len(x24hr)
+    #   gev_params = []
     
-    data = intensity_data[duration].dropna()
+    # data = intensity_data[duration].dropna()
 
-    for i in range(max_index - window_size + 1):
-        window_data = data.iloc[i:i + window_size]
+    # for i in range(max_index - window_size + 1):
+    #     window_data = data.iloc[i:i + window_size]
 
-        params_window = gev.fit(window_data)
+    #     params_window = gev.fit(window_data)
 
-        gev_params.append(params_window)
+    #     gev_params.append(params_window)
 
-    x = np.linspace(0, max(np.max(sorted_data_1), np.max(sorted_data_2), np.max(sorted_data_3),
-                           np.max(sorted_data_4), np.max(sorted_data_5), np.max(sorted_data_6)), 1000)
+    # x = np.linspace(0, max(np.max(sorted_data_1), np.max(sorted_data_2), np.max(sorted_data_3),
+    #                        np.max(sorted_data_4), np.max(sorted_data_5), np.max(sorted_data_6)), 1000)
 
-    mean_gev_params = np.mean(gev_params, axis=0)
+    # mean_gev_params = np.mean(gev_params, axis=0)
         # Assuming mean_gev_params_1 contains the shape, location, and scale parameters
     
     # shape, loc, scale = mean_gev_params
@@ -92,8 +92,9 @@ def duration_window_wise(window_size, duration):
     _95thpercentile_data = pd.read_csv('studies/reliability/LAX/95_percent_intensity_conf_interval.csv')
 
     # print(mean_data.iloc[1:,1])
-    mean = mean_data.loc[duration, str(window_size)]
-    percentile_95 = _95thpercentile_data.loc[duration, str(window_size)]
+    mean = mean_data.loc[duration, window_size]
+    print(mean)
+    percentile_95 = _95thpercentile_data.loc[duration, window_size]
     
     gamma = 0.57721
     beta = (percentile_95 - mean) / (np.log(-np.log(0.95)) + gamma)
