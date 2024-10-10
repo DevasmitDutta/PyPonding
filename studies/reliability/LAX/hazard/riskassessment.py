@@ -36,11 +36,11 @@ f5, sorted_data_5 = ecdf(x12hr)
 f6, sorted_data_6 = ecdf(x24hr)
 
 # Define the list of window sizes (moving window sizes)
-window_sizes = ['2yr', '5yr', '20yr', '25yr', '50yr', '100yr', '200yr', '500yr', '1000yr'] #np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
+window_sizes = ['2yr', '5yr', '10yr', '25yr', '50yr', '100yr', '200yr', '500yr', '1000yr'] #np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
-# columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
-columns = ['x1hr']
+columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
+# columns = ['x1hr']
 
 # Create an empty DataFrame with the specified rows and columns
 df_collect_pf_exceedance = pd.DataFrame(index=window_sizes, columns=columns)
@@ -133,16 +133,16 @@ def duration_window_wise(window_size, duration):
         else:
             print('False')
 
-    print(f'shape: {mean_gev_params[0]}, loc: {mean_gev_params[1]}, scale: {mean_gev_params[2]}')
+    # print(f'shape: {mean_gev_params[0]}, loc: {mean_gev_params[1]}, scale: {mean_gev_params[2]}')
 
-    plt.hist(threshold_num, bins=10, edgecolor='black', alpha=0.7)
-    plt.title('Histogram of Uniform Samples')
-    plt.xlabel('Value')
-    plt.ylabel('Frequency')
-    plt.show()
+    # plt.hist(threshold_num, edgecolor='black', alpha=0.7)
+    # plt.title('Histogram of Uniform Samples')
+    # plt.xlabel('Value')
+    # plt.ylabel('Frequency')
+    # plt.show()
 
-    plt.hist(random_samples, edgecolor='black', alpha=0.7)
-    plt.show()
+    # plt.hist(random_samples, edgecolor='black', alpha=0.7)
+    # plt.show()
 
     Prob_of_exceedance = cnt/num_samples
     print(f'Probability of exceedance: {Prob_of_exceedance} in {window_size} years over {duration} duration') 
