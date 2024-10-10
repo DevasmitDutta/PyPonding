@@ -40,7 +40,7 @@ window_sizes = ['2yr', '5yr', '20yr', '25yr', '50yr', '100yr', '200yr', '500yr',
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
 # columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
-columns = [0]
+columns = ['1hr']
 
 # Create an empty DataFrame with the specified rows and columns
 df_collect_pf_exceedance = pd.DataFrame(index=window_sizes, columns=columns)
@@ -90,10 +90,16 @@ def duration_window_wise(window_size, duration):
 
     mean_data = pd.read_csv('studies/reliability/LAX/mean_intensity_conf_interval.csv')
     _95thpercentile_data = pd.read_csv('studies/reliability/LAX/95_percent_intensity_conf_interval.csv')
+    print(_95thpercentile_data)
 
     # print(mean_data.iloc[1:,1])
+    # Clean the DataFrame by removing unnecessary columns
+
+    # Set the 'Dur (hr)' column as the index
+    mean_data.set_index('Dur (hr)', inplace=True)
     mean = mean_data.loc[duration, window_size]
-    print(mean)
+
+    _95thpercentile_data = _95thpercentile_data.set_index('Dur (hr)', inplace=True)
     percentile_95 = _95thpercentile_data.loc[duration, window_size]
     
     gamma = 0.57721
