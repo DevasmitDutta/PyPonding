@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import genextreme as gev
+from scipy.stats import gumbel_r as gumbel
 import os
 import scipy.stats as stats
 from scipy.stats import norm
@@ -35,7 +36,7 @@ f5, sorted_data_5 = ecdf(x12hr)
 f6, sorted_data_6 = ecdf(x24hr)
 
 # Define the list of window sizes (moving window sizes)
-window_sizes = np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
+window_sizes = [2, 5, 20, 25, 50, 100, 200, 500, 1000] #np.arange(5,61,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
 # columns = ['x1hr', 'x2hr', 'x3hr', 'x6hr', 'x12hr', 'x24hr']
@@ -79,14 +80,28 @@ def duration_window_wise(window_size, duration):
 
     mean_gev_params = np.mean(gev_params, axis=0)
         # Assuming mean_gev_params_1 contains the shape, location, and scale parameters
-    shape, loc, scale = mean_gev_params
-
-    # Generate 100 random samples from the GEV distribution
-    random_samples = np.sort(stats.genextreme.rvs(c=shape, loc=loc, scale=scale, size=1000))
-    # print(f'Random samples: {random_samples}')
     
-    Pf = np.zeros(1000)
-    threshold_num = np.random.uniform(0, 1, 1000)
+    # shape, loc, scale = mean_gev_params
+
+    num_samples = 1000
+    # Generate 100 random samples from the GEV distribution
+    # random_samples = np.sort(stats.genextreme.rvs(c=shape, loc=loc, scale=scale, size=num_samples))
+    # print(f'Random samples: {random_samples}')
+
+    mean_data = pd.read_csv('studies/reliability/LAX/mean_intensity_conf_interval.csv')
+    _95thpercentile_data = pd.read_csv('studies/reliability/LAX/95_percent_intensity_conf_interval.csv')
+
+    # print(mean_data.iloc[1:,1])
+    mean = mean_data.loc[duration, str(window_size)]
+    percentile_95 = _95thpercentile_data.loc[duration, str(window_size)]
+    
+    gamma = 0.57721
+    beta = (percentile_95 - mean) / (np.log(-np.log(0.95)) + gamma)
+    mu = mean - beta * gamma
+    random_samples = gumbel.rvs(loc=mu, scale=beta, size=num_samples)
+    
+    Pf = np.zeros(num_samples)
+    threshold_num = np.random.uniform(0, 1, num_samples)
     cnt = 0
     for (i, IM) in enumerate(random_samples):
         print(f'Entering IM count: {i} with IM: {IM}')
@@ -109,16 +124,18 @@ def duration_window_wise(window_size, duration):
         else:
             print('False')
 
-    plt.hist(threshold_num, bins=30, edgecolor='black', alpha=0.7)
+    print(f'shape: {mean_gev_params[0]}, loc: {mean_gev_params[1]}, scale: {mean_gev_params[2]}')
+
+    plt.hist(threshold_num, bins=10, edgecolor='black', alpha=0.7)
     plt.title('Histogram of Uniform Samples')
     plt.xlabel('Value')
     plt.ylabel('Frequency')
     plt.show()
 
-    plt.hist(random_samples, bins=1500, edgecolor='black', alpha=0.7)
+    plt.hist(random_samples, edgecolor='black', alpha=0.7)
     plt.show()
 
-    Prob_of_exceedance = cnt/1000
+    Prob_of_exceedance = cnt/num_samples
     print(f'Probability of exceedance: {Prob_of_exceedance} in {window_size} years over {duration} duration') 
     df_collect_pf_exceedance.loc[window_size, duration] = Prob_of_exceedance 
 
