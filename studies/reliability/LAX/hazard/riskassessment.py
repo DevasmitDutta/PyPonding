@@ -107,10 +107,10 @@ def duration_window_wise(window_size, duration):
     gamma = 0.57721
     beta = (mean - percentile_95) / (np.log(-np.log(0.95)) + gamma)
     mu = mean - beta * gamma
-    random_samples = gumbel.rvs(loc=mu, scale=beta, size=num_samples)
+    random_samples = np.sort(gumbel.rvs(loc=mu, scale=beta, size=num_samples))
     
     Pf = np.zeros(num_samples)
-    threshold_num = np.random.uniform(0, 1, num_samples)
+    # threshold_num = np.random.uniform(0, 1, num_samples)
     cnt = 0
     for (i, IM) in enumerate(random_samples):
         print(f'Entering IM count: {i} with IM: {IM}')
@@ -125,9 +125,10 @@ def duration_window_wise(window_size, duration):
 
         Pf[i] = norm.cdf(np.log(IM), loc=mu_opt, scale=sigma_opt)
         # threshold_num[i] = np.random.uniform(0, 1)
-        print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num[i]}')
+        threshold_num = np.random.uniform(0, 1)
+        print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num}')
 
-        if Pf[i] < threshold_num[i]:
+        if Pf[i] < threshold_num:
             print('True')
             cnt += 1  
         else:
