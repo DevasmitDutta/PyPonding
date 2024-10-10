@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 *.egg-info
-*.csv
+# *.csv
 # *.png
 *.pdf
 *.xlsx
