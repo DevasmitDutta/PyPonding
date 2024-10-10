@@ -110,7 +110,7 @@ def duration_window_wise(window_size, duration):
     random_samples = np.sort(gumbel.rvs(loc=mu, scale=beta, size=num_samples))
     
     Pf = np.zeros(num_samples)
-    # threshold_num = np.random.uniform(0, 1, num_samples)
+    threshold_num = np.random.uniform(0, 1, num_samples)
     cnt = 0
     for (i, IM) in enumerate(random_samples):
         print(f'Entering IM count: {i} with IM: {IM}')
@@ -124,11 +124,11 @@ def duration_window_wise(window_size, duration):
         sigma_opt = df.loc[df['duration'].str.strip() == duration, 'sigma_opt'].values[0]
 
         Pf[i] = norm.cdf(np.log(IM), loc=mu_opt, scale=sigma_opt)
-        # threshold_num[i] = np.random.uniform(0, 1)
-        threshold_num = np.random.uniform(0, 1)
-        print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num}')
+        threshold_num[i] = np.random.uniform(0, 1)
+        # threshold_num = np.random.uniform(0, 1)
+        print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num[i]}')
 
-        if Pf[i] < threshold_num:
+        if Pf[i] < threshold_num[i]:
             print('True')
             cnt += 1  
         else:
@@ -136,13 +136,13 @@ def duration_window_wise(window_size, duration):
 
     # print(f'shape: {mean_gev_params[0]}, loc: {mean_gev_params[1]}, scale: {mean_gev_params[2]}')
 
-    # plt.hist(threshold_num, edgecolor='black', alpha=0.7)
+    # plt.hist(threshold_num, bins = 100, edgecolor='black', alpha=0.7)
     # plt.title('Histogram of Uniform Samples')
     # plt.xlabel('Value')
     # plt.ylabel('Frequency')
     # plt.show()
 
-    # plt.hist(random_samples, edgecolor='black', alpha=0.7)
+    # plt.hist(random_samples, edgecolor='black', alpha=0.7, label=f'{window_size} years')
     # plt.show()
 
     Prob_of_exceedance = cnt/num_samples
@@ -154,6 +154,12 @@ def duration_window_wise(window_size, duration):
 for (i, window_size) in enumerate(window_sizes):
     for (j, duration) in enumerate(columns):
         duration_window_wise(window_size, duration)
+
+# plt.title('Generated random samples from Gumbel (GEV-I) distribution for x1hr')
+# plt.xlabel('Intensity Measure')
+# plt.ylabel('Frequency')
+# plt.legend()
+# plt.show()
 
 # Finalize figure with labels and title
 for (i, duration) in enumerate(columns):
