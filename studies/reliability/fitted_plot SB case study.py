@@ -43,7 +43,7 @@ for i, duration in enumerate(durations):
         plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
 
         # Generate IM values for plotting the fitted curve
-        IM_plot = np.linspace(0, 9, 500)
+        IM_plot = np.linspace(0, 7, 500)
         p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
 
         # Plot the fitted fragility curve
@@ -87,7 +87,7 @@ for i, duration in enumerate(durations):
     # plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
 
     # Generate IM values for plotting the fitted curve
-    IM_plot = np.linspace(0, 9, 500)
+    IM_plot = np.linspace(min(IM), 7, 500)
     p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
 
     # Plot the fitted fragility curve
