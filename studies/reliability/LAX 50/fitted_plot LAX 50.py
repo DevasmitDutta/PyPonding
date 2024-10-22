@@ -52,7 +52,7 @@ for i, duration in enumerate(durations):
         # Add labels and title
         plt.xlabel('IM')
         plt.ylabel('Probability of Limit State of Exceedance')
-        plt.title('Fragility Function Fitting (1 hr duration)- Santa Barbara (50 yr return period)')
+        plt.title('Fragility Function Fitting (1 hr duration)- LAX  (50 yr return period)')
         plt.legend(loc='best', fontsize=8)
         plt.grid(True)
         plt.savefig('studies/reliability/LAX 50/Fragility_fit/fitted_plot_1hr.png')
@@ -99,7 +99,7 @@ results_df.to_csv(f'studies/reliability/LAX 50/Fragility_fit/mu_sigma_opt_durati
 # Add labels and title
 plt.xlabel('IM')
 plt.ylabel('Probability of Limit State of Exceedance') 
-plt.title('Theoritical Fragility Curves - Santa Barbara (50 yr return period)')
+plt.title('Theoritical Fragility Curves - LAX  (50 yr return period)')
 plt.legend(loc='best', fontsize=8)
 plt.grid(True)
 plt.savefig('studies/reliability/LAX 50/Fragility_fit/duration_comparision_plot.png')
