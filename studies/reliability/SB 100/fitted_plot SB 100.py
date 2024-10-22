@@ -52,7 +52,7 @@ for i, duration in enumerate(durations):
         # Add labels and title
         plt.xlabel('IM')
         plt.ylabel('Probability of Limit State of Exceedance')
-        plt.title('Fragility Function Fitting (1 hr duration)- Santa Barbara (100 yr return period)')
+        plt.title('Fragility Function Fitting (0.25 hr duration)- Santa Barbara (100 yr return period)')
         plt.legend(loc='best', fontsize=8)
         plt.grid(True)
         plt.savefig('studies/reliability/SB 100/Fragility_fit/fitted_plot_1hr.png')
