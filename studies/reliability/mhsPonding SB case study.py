@@ -22,5 +22,14 @@
 # run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
 
 
-exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/fragility_assessment SB case study-200.py').read())
-run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
+# exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/fragility_assessment SB case study-200.py').read())
+# run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
+
+# exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/fragility_assessment SB case study 40 performance period.py').read())
+# run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
+
+# exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/fragility_assessment SB case study 30 performance period.py').read())
+# run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
+
+exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/fragility_assessment SB case study performance period.py').read())
+run_analysis_different_window_size('W14X22',360.0,0.020833333333333332,6.944444444444444e-05,1976)
