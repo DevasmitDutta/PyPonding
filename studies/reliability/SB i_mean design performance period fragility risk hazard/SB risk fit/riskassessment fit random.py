@@ -10,7 +10,7 @@ from scipy.stats import ecdf
 
 np.random.seed(0)
 # exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/LAX/hazard/fragility_assessment LAX-2.py').read())
-intensity_data = pd.read_csv(os.path.join(os.getcwd(),'studies/reliability/SB performance period fragility risk hazard/final_precipitation_intensity_data.xlsx - Sheet1.csv'));
+intensity_data = pd.read_csv(os.path.join(os.getcwd(),'studies/reliability/SB i_mean design performance period fragility risk hazard/final_precipitation_intensity_data.xlsx - Sheet1.csv'));
 
 # Extract valid data, removing NaNs
 x_point_25hr = intensity_data['x0.25hr'].dropna()
@@ -30,7 +30,7 @@ f5, sorted_data_5 = ecdf(x2hr).cdf.probabilities, np.unique(x2hr)
 f6, sorted_data_6 = ecdf(x3hr).cdf.probabilities, np.unique(x3hr) 
 
 # Define the list of window sizes (moving window sizes)
-window_sizes = [5, 10, 15, 20, 25, 30, 35, 40] #np.arange(5,41,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
+window_sizes = np.arange(5,41,1) #np.arange(5,41,1) #[5, 8, 10, 15, 20, 30, 40, 50, 60]  # Generates values from 1 to 10 with a step size of 1
 line_styles = ['-', '--', ':', '-.', '.-.']  # Different line styles for each window size
 
 columns = ['x0.25hr', 'x0.50hr', 'x1hr', 'x2hr', 'x3hr']
@@ -82,11 +82,11 @@ def duration_window_wise(window_size, duration):
         # Pf[i] = run_analysis('W14X22',360.0,0.020833333333333332,6.944444444444444e-05, label, IM, duration, window_size)
 
         # Read the CSV file into a DataFrame
-        df = pd.read_csv(f'studies/reliability/SB performance period fragility risk hazard/SB {window_size} performance period/Fragility_fit/mu_sigma_opt_durationwise.csv')
+        df = pd.read_csv(f'studies/reliability/SB i_mean design performance period fragility risk hazard/Fragility_fit/mu_sigma_opt_durationwise.csv')
 
         # Extract the optimized mu and sigma values for the current duration
-        mu_opt = df.loc[df['duration'].str.strip() == duration, 'mu_opt'].values[0]
-        sigma_opt = df.loc[df['duration'].str.strip() == duration, 'sigma_opt'].values[0]
+        mu_opt = df.values[0][0] #df.loc[df['duration'].str.strip() == duration, 'mu_opt'].values[0]
+        sigma_opt = df.values[0][1] #df.loc[df['duration'].str.strip() == duration, 'sigma_opt'].values[0]
 
         print(f'For duration {duration} period {window_size} Optimized mu: {mu_opt}, Optimized sigma: {sigma_opt}')
 
@@ -120,4 +120,4 @@ plt.xlabel('Performance Period, years')
 plt.ylabel('Probability of Limit State of Exceedance')
 plt.title('Probability of Limit State of Exceedance in X years over different durations')
 plt.legend()
-plt.savefig('studies/reliability/SB performance period fragility risk hazard/SB risk fit/Probability_of_limit_state_exceedance_X_years_random_block.png')
+plt.savefig('studies/reliability/SB i_mean design performance period fragility risk hazard/SB risk fit/Probability_of_limit_state_exceedance_X_years_random_block.png')
