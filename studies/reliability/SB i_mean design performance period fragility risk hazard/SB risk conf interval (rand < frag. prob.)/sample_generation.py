@@ -69,11 +69,11 @@ for (i, duration) in enumerate(columns):
     for (j, window_size) in enumerate(window_sizes):
         duration_window_wise(window_size, duration)
 
-    plt.title(f'Generated random samples from GEV for different performance periods for {duration}')
+    plt.title(f'Generated random samples from GEV for different return periods for {duration}')
     plt.xlabel('Intensity Measure')
     plt.ylabel('Frequency')
     plt.legend()
-    plt.savefig(f'studies/reliability/SB i_mean design performance period fragility risk hazard/SB risk conf interval/Random_samples_from_GEV_distribution_{duration}.png')    
+    plt.savefig(f'studies/reliability/SB i_mean design performance period fragility risk hazard/SB risk conf interval (rand < frag. prob.)/Random_samples_from_GEV_distribution_{duration}.png')    
 
 for (i, duration) in enumerate(columns):
 
@@ -85,4 +85,4 @@ for (i, duration) in enumerate(columns):
         plt.xlabel('Intensity Measure')
         plt.ylabel('Frequency')
         plt.legend()
-        plt.savefig(f'studies/reliability/SB i_mean design performance period fragility risk hazard/SB risk conf interval/Random_samples_from_GEV_distribution_{window_size}_yr_{duration}.png')    
+        plt.savefig(f'studies/reliability/SB i_mean design performance period fragility risk hazard/SB risk conf interval (rand < frag. prob.)/Random_samples_from_GEV_distribution_{window_size}_yr_{duration}.png')    
