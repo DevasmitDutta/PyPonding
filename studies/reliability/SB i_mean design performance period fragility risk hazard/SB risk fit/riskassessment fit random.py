@@ -95,7 +95,7 @@ def duration_window_wise(window_size, duration):
         # num = np.random.uniform(0, 1)
         print(f'Probability of exceedance: {Pf[i]} < Random number: {threshold_num[i]}')
 
-        if Pf[i] < threshold_num[i]:
+        if Pf[i] > threshold_num[i]:
             print('True')
             cnt += 1  
         else:
