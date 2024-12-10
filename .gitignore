@@ -11,3 +11,4 @@ build/
 **/dist
 *.so
 myenv/lib/python3.12/site-packages/openseespylinux/opensees.so
+/home/devasmit/Desktop/PyPonding/studies/reliability/SB i_mean design performance period fragility risk hazard
