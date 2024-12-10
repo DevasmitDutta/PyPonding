@@ -53,15 +53,15 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
 
 upper_limit = 0    
 
-# durations = ['x0.25hr','x0.5hr','x1hr','x2hr','x3hr']
-durations = ['x0.25hr']
+durations = ['x0.25hr','x0.5hr','x1hr','x2hr','x3hr']
+# durations = ['x0.25hr']
 
 def run_analysis_multiple_periods(shape_name,L,slope,qD,label):
    for duration in durations:
        run_analysis(shape_name,L,slope,qD,label,duration)
 
 def run_analysis(shape_name, L, slope, qD, label, duration):
-    i_variable = np.arange(3,16) #np.linspace(3,9,50) #np.linspace(10, 50, 50)
+    i_variable = np.linspace(1,16,50) #np.arange(3,16) #np.linspace(3,9,50) #np.linspace(10, 50, 50)
     fragility_data_points_path = f'studies/reliability/LAX sensitivity analysis copy/100yr-Durations/Fragility_trials_{duration}/fragility_data_points{1976}.csv'
     
     # Ensure the directory exists

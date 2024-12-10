@@ -8,8 +8,8 @@ import matplotlib.colors as mcolors
 from mle_fit import fn_mle_pc
 from scipy.stats import norm, binom
 
-# durations = ['x0.25hr','x0.5hr','x1hr','x2hr','x3hr']
-durations = ['x0.25hr']
+durations = ['x0.25hr','x0.5hr','x1hr','x2hr','x3hr']
+# durations = ['x0.25hr']
 num_durations = len(durations)
 
 # Define a dark color palette
@@ -30,7 +30,7 @@ for i, duration in enumerate(durations):
 
         # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
         # IM = intensities
-        IM = np.arange(3,16)
+        IM = np.linspace(1,16,50)
         num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
         # num_gms = np.ones(len(data_1[duration].values),1) * 200
         num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
@@ -42,7 +42,7 @@ for i, duration in enumerate(durations):
         plt.scatter(IM, num_collapse / num_gms, color=dark_colors[i], marker='^', s=50, label=f'Observed Data ({duration})')
 
         # Generate IM values for plotting the fitted curve
-        IM_plot = np.linspace(0, 200, 500)
+        IM_plot = np.linspace(0, 20, 500)
         p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
 
         # Plot the fitted fragility curve
@@ -68,7 +68,7 @@ for i, duration in enumerate(durations):
     data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/LAX sensitivity analysis copy/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv'))
     
     # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
-    IM = np.arange(3,16)
+    IM = np.linspace(1,16,50)
     num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
     num_gms = np.full(len(data_1[duration][~np.isnan(data_1[duration])].values), 200)
 
@@ -77,7 +77,7 @@ for i, duration in enumerate(durations):
     results_df = results_df._append({'duration': duration, 'mu_opt': mu_opt, 'sigma_opt': sigma_opt}, ignore_index=True)
 
     # Plot the fitted fragility curve
-    IM_plot = np.linspace(0, 200, 100)
+    IM_plot = np.linspace(0, 20, 100)
     p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
     plt.plot(IM_plot, p_fit, color=dark_colors[i], linestyle='--', label=f'Fitted Lognormal CDF ({duration})\nmu={mu_opt:.3f}, sigma={sigma_opt:.3f}')
 
