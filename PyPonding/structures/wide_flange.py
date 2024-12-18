@@ -344,6 +344,27 @@ class wf:
         elastic_beam.BuildModel();
         return elastic_beam
      
+    def preliminary_design_step_SR_ratio_for_a_given_z(self,z):
+        elastic_beam = self.steel_beam_object()
+        elastic_beam.nele   = 40
+        elastic_beam.E      = 0.8*self.E
+        elastic_beam.LF_D   = 1.2
+        elastic_beam.LF_P   = 1.2
+        elastic_beam.Mc     = 0.9*self.Fy*self.Zz()
+        print('\n Fy = %.3f ksi' % (self.Fy),'Zz = %.3f in^3' % (self.Zz()),'capacity = %.3f kip-in' % (elastic_beam.Mc))
+        ratio = elastic_beam.preliminary_design_step_fixed_z_Run_To_Strength_ratio(z)
+        return ratio
+
+    def SR_ratio_for_a_given_z(self,z):
+        elastic_beam = self.steel_beam_object()
+        elastic_beam.nele   = 40
+        elastic_beam.E      = 0.8*self.E
+        elastic_beam.LF_D   = 1.2
+        elastic_beam.LF_P   = 1.2
+        elastic_beam.Mc     = 0.9*self.Fy*self.Zz()
+        print('\n Fy = %.3f ksi' % (self.Fy),'Zz = %.3f in^3' % (self.Zz()),'capacity = %.3f kip-in' % (elastic_beam.Mc))
+        ratio = elastic_beam.fixed_z_Run_To_Strength_ratio(z)
+        return ratio
 
     def maximum_permitted_zw(self,method):
         if method == 'AISC Appendix 2':

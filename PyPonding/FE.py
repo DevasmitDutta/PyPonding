@@ -599,6 +599,172 @@ class PondingAnalysis:
         self.model = model 
         self.type = type 
         
+    def run_preliminary_step(self,load_factors,x):
+        if self.type == 'Constant_Level':
+            z = x
+            
+            f_nodal = self.model.GetNodalForceVector(load_factors)
+            
+            # Run Initial Analysis
+            if self.use_stored_analysis:
+                (d,r) = self.model.SolveForDispWithStored(f_nodal)
+            else:
+                K = self.model.GetGlobalStiffnessMatrix()
+                (d,r) = self.model.SolveForDisp(K,f_nodal)
+                
+            # Iterate
+            for i in range(1):
+                d_last = d
+                f_ponding = self.model.GetPondingForceVector(d,z)
+                if self.output_level > 0:
+                    print('Iteration %3i, Total Ponding Load = %.6f' % (i,-np.sum(f_ponding)))
+                f = f_nodal + f_ponding
+                
+                if self.use_stored_analysis:
+                    (d,r) = self.model.SolveForDispWithStored(f)
+                else:
+                    (d,r) = self.model.SolveForDisp(K,f)
+                
+                if self.output_level > 0:
+                    print('Min Deflection: %.3f \tNode Disp Incr. %.6f' % (min(d),np.linalg.norm(d-d_last)))
+                if np.linalg.norm(d-d_last) < self.tol_z:
+                    if self.output_level > 0:
+                        print('Converged')
+                    # store results
+                    self.load_factors = load_factors
+                    self.z = z
+                    self.d = d
+                    self.r = r
+                    return 0
+                    
+        elif self.type == 'Modified_Rain_Load':
+            z = x
+            
+            f_nodal = self.model.GetNodalForceVector({'DEAD':1.0})
+            
+            # Run Initial Analysis
+            if self.use_stored_analysis:
+                (d,r) = self.model.SolveForDispWithStored(f_nodal)
+            else:
+                K = self.model.GetGlobalStiffnessMatrix()
+                (d,r) = self.model.SolveForDisp(K,f_nodal)
+                
+            # Iterate
+            for i in range(1):
+                d_last = d
+                f = f_nodal + self.model.GetPondingForceVector(d,z)
+                
+                if self.use_stored_analysis:
+                    (d,r) = self.model.SolveForDispWithStored(f)
+                else:
+                    (d,r) = self.model.SolveForDisp(K,f)
+                
+                if self.output_level > 0:
+                    print('Min Deflection: %.3f \tNode Disp Incr. %.6f' % (min(d),np.linalg.norm(d-d_last)))
+                if np.linalg.norm(d-d_last) < self.tol_z:
+                    if self.output_level > 0:
+                        print('Converged')
+                    
+                    # subtract out dead load and add back in defined load combination
+                    f_nodal_1 = self.model.GetNodalForceVector({'DEAD':-1.0})
+                    f_nodal_2 = self.model.GetNodalForceVector(load_factors)
+
+                    if self.use_stored_analysis:
+                        (d1,r1) = self.model.SolveForDispWithStored(f_nodal_1)
+                        (d2,r2) = self.model.SolveForDispWithStored(f_nodal_2)
+                    else:
+                        K = self.model.GetGlobalStiffnessMatrix()
+                        (d1,r1) = self.model.SolveForDisp(K,f_nodal_1)
+                        (d2,r2) = self.model.SolveForDisp(K,f_nodal_2)
+                    
+                    # store results
+                    self.load_factors = load_factors
+                    self.z = z                    
+                    self.d = 1.6*(d+d1)+d2 # @todo make option for other rain load factors
+                    self.r = 1.6*(r+r1)+r2
+                    return 0            
+        
+        elif self.type == 'Constant_Volume':
+            V = x
+            
+            f_nodal = self.model.GetNodalForceVector(load_factors)
+            
+            # Run Initial Analysis
+            if self.use_stored_analysis:
+                (d,r) = self.model.SolveForDispWithStored(f_nodal)
+            else:
+                K = self.model.GetGlobalStiffnessMatrix()
+                (d,r) = self.model.SolveForDisp(K,f_nodal)            
+            
+            # Iterate
+            z = 1
+            for i in range(1):
+                d_last = d
+                # determine z given V
+                for j in range(self.max_iter_find_z):
+                    z_last = z
+                    res = self.model.GetPondingVolume(d,z)
+                    V_calc = res[0]
+                    dVdz   = res[1]
+                    if self.output_level > 0:
+                        print('Iteration = %i' % j)
+                        print('V         = %g' % V)
+                        print('V_calc    = %g' % V_calc)
+                        print('z         = %g' % (z + (V-V_calc)/dVdz))
+                        print('z_last    = %g' % z_last)
+                    if abs(V-V_calc)/V < self.tol_V:
+                        if self.output_level > 0:
+                            print('found z')
+                        break
+                    z = z + (V-V_calc)/dVdz
+                    if j == self.max_iter_find_z-1:
+                        if self.output_level > 0:
+                            print('Could not find z')
+                        return -1
+                
+                # solve for d given z
+                f = f_nodal + self.model.GetPondingForceVector(d,z)
+                
+                if self.use_stored_analysis:
+                    (d,r) = self.model.SolveForDispWithStored(f)
+                else:
+                    (d,r) = self.model.SolveForDisp(K,f)  
+                
+                if self.output_level > 0:
+                    print('Min Deflection: %.3f \tNode Disp Incr. %.6f' % (min(d),np.linalg.norm(d-d_last)))
+                if np.linalg.norm(d-d_last) < self.tol_z:
+                    if self.output_level > 0:
+                        print('Converged')
+                    # store results
+                    self.load_factors = load_factors
+                    self.z = z
+                    self.d = d
+                    self.r = r
+                    return 0          
+                    
+                if i == self.max_iter_const_V-1:
+                    if self.output_level > 0:
+                        print('Could not find a solution')
+                    return -1
+        
+        elif self.type == 'No_Ponding_Effect':
+            z = x
+            
+            f = self.model.GetNodalForceVector(load_factors) + self.model.GetPondingForceVector(np.zeros(self.model.ndof),z)
+            
+            if self.use_stored_analysis:
+                (d,r) = self.model.SolveForDispWithStored(f)
+            else:
+                K = self.model.GetGlobalStiffnessMatrix()
+                (d,r) = self.model.SolveForDisp(K,f)            
+
+            # store results
+            self.load_factors = load_factors
+            self.z = z
+            self.d = d
+            self.r = r
+            return 0
+
     def run(self,load_factors,x):
         if self.type == 'Constant_Level':
             z = x

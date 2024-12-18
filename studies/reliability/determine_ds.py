@@ -60,6 +60,8 @@ wf_section.wD       = qD*TW # Dead load per length
 #method = 'DAMP'
 method = 'Proposed for ASCE 7'
 zw_lim = wf_section.maximum_permitted_zw(method)
+ratio_for_given_z = wf_section.SR_ratio_for_a_given_z(3.14)
+print('ratio_for_given_zw = %.3f' % (ratio_for_given_z))
 
 # Compute hydraulic head
 i  = 3.75*in_per_hour  # Rain intensity

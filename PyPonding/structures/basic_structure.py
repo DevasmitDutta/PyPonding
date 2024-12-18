@@ -17,6 +17,58 @@ class basic_structure:
     def __init__(self):
         pass    
     
+    def preliminary_design_step_fixed_z_Run_To_Strength_ratio(self,z,use_stored=True,use_sparse=False):
+        self.BuildModel();
+        self.model.use_sparse_matrix_solver = use_sparse
+        
+        # if self.include_ponding_effect:   
+        #     if self.modified_rain_load:
+        #         PA = FE.PondingAnalysis(self.model,'Modified_Rain_Load')
+        #     else:
+        #         PA = FE.PondingAnalysis(self.model,'Constant_Level')
+        # else:
+        PA = FE.PondingAnalysis(self.model,'No_Ponding_Effect')
+        
+        PA.max_iterations_z = 100
+        PA.use_stored_analysis = use_stored
+        if use_stored:
+            self.model.StoreAnalysis()
+        
+        res = PA.run_preliminary_step({'DEAD':self.alpha*self.LF_D,'SNOW':self.alpha*self.LF_S2},z)
+        if res != 0:
+            print('Not converged')
+            return float('nan')
+        (SR,SR_note) = self.Strength_Ratio(PA)
+        print('Level = %7.4f, Strength Ratio = %10.7f (%s)' % (z,SR,SR_note))
+        
+        return SR
+
+    def fixed_z_Run_To_Strength_ratio(self,z,use_stored=True,use_sparse=False):
+        self.BuildModel();
+        self.model.use_sparse_matrix_solver = use_sparse
+        
+        if self.include_ponding_effect:   
+            if self.modified_rain_load:
+                PA = FE.PondingAnalysis(self.model,'Modified_Rain_Load')
+            else:
+                PA = FE.PondingAnalysis(self.model,'Constant_Level')
+        else:
+            PA = FE.PondingAnalysis(self.model,'No_Ponding_Effect')
+        
+        PA.max_iterations_z = 100
+        PA.use_stored_analysis = use_stored
+        if use_stored:
+            self.model.StoreAnalysis()
+        
+        res = PA.run({'DEAD':self.alpha*self.LF_D,'SNOW':self.alpha*self.LF_S2},z)
+        if res != 0:
+            print('Not converged')
+            return float('nan')
+        (SR,SR_note) = self.Strength_Ratio(PA)
+        print('Level = %7.4f, Strength Ratio = %10.7f (%s)' % (z,SR,SR_note))
+        
+        return SR
+
     def Run_To_Strength_Limit(self,start_level=None,max_level=None,min_level=None,incr=1,tol=0.0001,use_stored=True,use_sparse=False):
     
         if start_level is None:
