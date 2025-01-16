@@ -22,7 +22,7 @@ for i, duration in enumerate(durations):
         plt.figure(figsize=(20, 12))
 
         # Load the data from the CSV file
-        data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/LAX sensitivity analysis copy 2/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv'))
+        data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/LAX analysis sens cd_0.6/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv'))
 
         # Extract the durations and intensities
         # intensities = data_2[duration][~np.isnan(data_2[duration])].sort_values(ascending=True).values
@@ -53,7 +53,7 @@ for i, duration in enumerate(durations):
         plt.title(f'Fragility Function Fitting (100yr return period)- LAX ({duration} duration)')
         plt.legend(loc='best', fontsize=8)
         plt.grid(True)
-        plt.savefig(f'studies/reliability/LAX sensitivity analysis copy 2/100yr-Durations/Fragility_fit/fitted_plot_{duration}.png')
+        plt.savefig(f'studies/reliability/LAX analysis sens cd_0.6/100yr-Durations/Fragility_fit/fitted_plot_{duration}.png')
 
         # Show the plot
         plt.show()  
@@ -64,7 +64,7 @@ results_df = pd.DataFrame(columns=['duration', 'mu_opt', 'sigma_opt'])
 
 for i, duration in enumerate(durations):
     # Load the data from the CSV file
-    data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/LAX sensitivity analysis copy 2/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv'))
+    data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/LAX analysis sens cd_0.6/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv'))
     
     # Assume the CSV file has columns named 'IM' and 'num_collapse' and 'num_gms'
     IM = np.linspace(1,16,50)
@@ -84,7 +84,7 @@ for i, duration in enumerate(durations):
     plt.plot(IM_plot, p_fit, color=dark_colors[i], linestyle='--', label=f'Fitted Lognormal CDF ({duration})\nmu={mu_opt:.3f}, sigma={sigma_opt:.3f}')
 
 # Save the results DataFrame to a CSV file
-results_df.to_csv(f'studies/reliability/LAX sensitivity analysis copy 2/100yr-Durations/Fragility_fit/mu_sigma_opt_durationwise.csv', index=False)
+results_df.to_csv(f'studies/reliability/LAX analysis sens cd_0.6/100yr-Durations/Fragility_fit/mu_sigma_opt_durationwise.csv', index=False)
 
 # Add labels and title
 plt.xlabel('IM')
@@ -92,7 +92,7 @@ plt.ylabel('Probability of Limit State of Exceedance')
 plt.title('Theoritical Fragility Curves - LAX (100 yr period)')
 plt.legend(loc='best', fontsize=8)
 plt.grid(True)
-plt.savefig(f'studies/reliability/LAX sensitivity analysis copy 2/100yr-Durations/Fragility_fit/duration_comparision_plot.png')
+plt.savefig(f'studies/reliability/LAX analysis sens cd_0.6/100yr-Durations/Fragility_fit/duration_comparision_plot.png')
 
 # Show the plot
 plt.show()
