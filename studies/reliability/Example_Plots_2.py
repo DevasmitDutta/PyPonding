@@ -2,7 +2,10 @@ import openseespy.opensees as ops
 from math import pi,cos,cosh,ceil,tan,tanh
 import numpy as np
 import matplotlib.pyplot as plt
-from PyPonding.structures import wf,wf_shapes
+from PyPonding.structures import wf#,wf_shapes
+from libdenavit.section.database import wide_flange_database
+import matplotlib as mpl
+mpl.rcParams['text.usetex'] = False
 
 # Define units
 inch = 1.0
@@ -32,7 +35,8 @@ qD      = 0.0*psf
 gamma   = 62.4*pcf
 
 # Lookup shape data
-shape_data = wf_shapes[shape_name]
+# shape_data = wf_shapes[shape_name]
+shape_data = wide_flange_database[shape_name]
 d  = shape_data['d']*inch
 bf = shape_data['bf']*inch
 tf = shape_data['tf']*inch
@@ -106,8 +110,8 @@ slope2 = (pi*C2**0.25)/(TW*L2*(tan(0.5*pi*C2**0.25)+tanh(0.5*pi*C2**0.25)))
 slope3 = (pi*C3**0.25)/(TW*L3*(tan(0.5*pi*C3**0.25)+tanh(0.5*pi*C3**0.25)))
 
 # Plot Results
-plt.rc('text',usetex=True)
-plt.rc('font',family='serif')
+# plt.rc('text',usetex=True)
+# plt.rc('font',family='serif')
 plt.rc('axes',labelsize=8)
 plt.rc('axes',titlesize=8)
 plt.rc('legend',fontsize=8)
@@ -131,7 +135,7 @@ plt.xlabel('Normalized Water Volume (V/SL, mm)')
 plt.ylabel('Water Level (mm)')
 plt.xlim( 0,250)
 plt.ylim(-250,250)
-plt.savefig('Example_Plot_1.png',dpi=300)
+# plt.savefig('Example_Plot_1.png',dpi=300)
 plt.savefig('Example_Plot_1.pdf')
 
 fig = plt.figure(figsize=(3.25,2.50))
@@ -144,7 +148,7 @@ plt.xlabel('Normalized Water Volume (V/SL, mm)')
 plt.ylabel('Water Level (mm)')
 plt.xlim(0,250)
 plt.ylim(0,300)
-plt.savefig('Example_Plot_2.png',dpi=300)
+# plt.savefig('Example_Plot_2.png',dpi=300)
 plt.savefig('Example_Plot_2.pdf')
 
 fig = plt.figure(figsize=(7.00,2.50))
@@ -168,7 +172,7 @@ plt.ylabel('Water Level (mm)')
 plt.xlim(210,290)
 plt.ylim(250,320)
 
-plt.savefig('Example_Plot_3.png',dpi=300)
+# plt.savefig('Example_Plot_3.png',dpi=300)
 plt.savefig('Example_Plot_3.pdf')
 
 plt.show()

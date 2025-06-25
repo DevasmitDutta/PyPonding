@@ -135,6 +135,7 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         Hk = 29.0*ksi # kinematic hardening modulus
         Fr = 0.2*Fy # residual stress
         Fr = 0.001*Fy
+        Fr = 0.3*Fy
 
         # Hourly rainfall rate (in/hr)
         locations = ['Denver','New York','New Orleans']

@@ -46,13 +46,17 @@ class basic_structure:
     def fixed_z_Run_To_Strength_ratio(self,z,use_stored=True,use_sparse=False):
         self.BuildModel();
         self.model.use_sparse_matrix_solver = use_sparse
+        print('include ponding effect = ',self.include_ponding_effect)
+        print('modified rain load = ',self.modified_rain_load)
         
         if self.include_ponding_effect:   
+            print('Entering ponding effect\n')
             if self.modified_rain_load:
                 PA = FE.PondingAnalysis(self.model,'Modified_Rain_Load')
             else:
                 PA = FE.PondingAnalysis(self.model,'Constant_Level')
         else:
+            print('Entering no ponding effect\n')
             PA = FE.PondingAnalysis(self.model,'No_Ponding_Effect')
         
         PA.max_iterations_z = 100
