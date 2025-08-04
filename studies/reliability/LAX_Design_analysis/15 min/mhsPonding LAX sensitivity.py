@@ -4,7 +4,7 @@
 
 exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/LAX_Design_analysis/15 min/fragility_assessment LAX sensitivity.py').read())
 # for shape in ['W12X35','W8X31']:
-for shape in ['W8X24','W10X17']:
+for shape in ['W16X26','W12X22','W8X24','W10X15']:
 # for shape in ['W10X17']:
     run_analysis_multiple_periods(shape,360.0,0.020833333333333332,6.944444444444444e-05,1976)
 

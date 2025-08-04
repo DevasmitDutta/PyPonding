@@ -53,7 +53,7 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
 
 upper_limit = 0    
 
-durations = ['x1000yr']
+durations = ['x100yr']
 # durations = ['x0.25hr']
 
 def run_analysis_multiple_periods(shape_name,L,slope,qD,label):
@@ -203,11 +203,8 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         #nsteps = 1000
         
         # Number of Monte Carlo trials
-        Ntrials = 200
-        #Ntrials = 200
-        # Ntrials = 99
-        # Ntrials = 1
-        # Ntrials = 500
+        # Ntrials = 200
+        Ntrials = 1000
         
         # From function input
         wfs = wide_flange_database[shape_name]

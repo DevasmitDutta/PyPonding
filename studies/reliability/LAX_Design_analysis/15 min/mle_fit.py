@@ -71,3 +71,44 @@ def mlefit(params, num_gms, num_collapse, IM):
     loglik = -np.sum(np.log(likelihood))
 
     return loglik
+
+# import numpy as np
+# import pandas as pd
+# from scipy.optimize import minimize
+# from scipy.stats import norm, binom
+# import matplotlib.pyplot as plt
+# import matplotlib.colors as mcolors
+# import os
+
+# --- Filtering function with tolerance ---
+def filter_by_median_im(IM, num_gms, num_collapse, tol=1e-6):
+    """
+    Keep only one representative (median IM) per probability level,
+    grouping probabilities within a tolerance.
+    """
+    prob = np.array(num_collapse) / np.array(num_gms)
+    df = pd.DataFrame({
+        'IM': IM,
+        'num_gms': num_gms,
+        'num_collapse': num_collapse,
+        'prob': prob
+    }).sort_values('prob').reset_index(drop=True)
+
+    filtered_rows = []
+    used = np.zeros(len(df), dtype=bool)
+
+    for i in range(len(df)):
+        if used[i]:
+            continue
+        p_ref = df.loc[i, 'prob']
+        mask = np.isclose(df['prob'], p_ref, atol=tol)
+        group = df[mask]
+        used[mask] = True
+        median_im = group['IM'].median()
+        closest_row = group.iloc[(group['IM'] - median_im).abs().argmin()]
+        filtered_rows.append(closest_row)
+
+    filtered_df = pd.DataFrame(filtered_rows)
+    return (filtered_df['IM'].values,
+            filtered_df['num_gms'].values,
+            filtered_df['num_collapse'].values)

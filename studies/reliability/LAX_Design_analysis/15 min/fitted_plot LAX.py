@@ -8,9 +8,10 @@ import matplotlib.colors as mcolors
 from mle_fit import fn_mle_pc
 from scipy.stats import norm, binom
 
-durations = ['x1000yr']
-# shape_name = ['W14X22','W10X22','W10X15']
-shape_name = ['W8X24','W10X17']
+durations = ['x500yr']
+
+shape_name = ['W14X30','W10X19','W12X14']
+
 
 num_durations = len(durations)
 
@@ -53,3 +54,4 @@ for i, duration in enumerate(durations):
         plt.grid(True)
         plt.savefig(f'studies/reliability/LAX_Design_analysis/15 min/Fragility_fit_{duration}_{shape_name[j]}/fitted_plot.png')
         plt.show()
+
