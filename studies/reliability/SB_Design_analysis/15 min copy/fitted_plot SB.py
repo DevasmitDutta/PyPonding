@@ -8,13 +8,13 @@ import matplotlib.colors as mcolors
 from mle_fit import fn_mle_pc
 from scipy.stats import norm, binom
 
-# durations = ['100yr']
+durations = ['100yr']
 
-# shape_name = ['W8X18','W10X19','W12X19','W14X26']
+shape_name = ['W14X22']
 
-durations = ['100yr','500yr','1000yr']
+# durations = ['100yr','500yr','1000yr']
 
-shape_name = [['W14X26','W12X19','W10X19','W8X18'],['W10X39','W10X22','W8X21','W10X15'],['W12X30','W12X19','W12X16','W10X15']]
+# shape_name = [['W14X26','W12X19','W10X19','W8X18'],['W10X39','W10X22','W8X21','W10X15'],['W12X30','W12X19','W12X16','W10X15']]
 
 
 num_durations = len(durations)
@@ -25,12 +25,13 @@ dark_colors = list(mcolors.TABLEAU_COLORS.values())[:num_durations]
 # data_2 = pd.read_csv(os.path.join(os.getcwd(), 'studies/reliability/SB/final_precipitation_intensity_data.xlsx - Sheet1.csv'))
 
 for i, duration in enumerate(durations):
-    for j, shape in enumerate(shape_name[i]):
+    # for j, shape in enumerate(shape_name[i]):
+    for j, shape in enumerate(shape_name):
         # Create a new figure for each duration and shape
         plt.figure(figsize=(20, 12))
 
         # Load the data from the CSV file
-        data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/SB_Design_analysis/15 min/Fragility_trials_{duration}_{shape}/fragility_data_points1976.csv'))
+        data_1 = pd.read_csv(os.path.join(os.getcwd(), f'studies/reliability/SB_Design_analysis/15 min copy/Fragility_trials_{duration}_{shape}/fragility_data_points1976.csv'))
 
         # Extract the durations and intensities
         IM = np.linspace(1,16,50)
@@ -58,10 +59,10 @@ for i, duration in enumerate(durations):
         plt.grid(True)
 
         # Ensure output directory exists
-        out_dir = f'studies/reliability/SB_Design_analysis/15 min/Fragility_fit_{duration}_{shape}'
+        out_dir = f'studies/reliability/SB_Design_analysis/15 min copy/Fragility_fit_{duration}_{shape}'
         os.makedirs(out_dir, exist_ok=True)
 
         plt.savefig(f'{out_dir}/fitted_plot.png')
-        plt.savefig(f'studies/reliability/SB_Design_analysis/15 min/Fragility_fit_{duration}_{shape}/fitted_plot.png')
+        plt.savefig(f'studies/reliability/SB_Design_analysis/15 min copy/Fragility_fit_{duration}_{shape}/fitted_plot.png')
         plt.show()
 

@@ -62,7 +62,7 @@ def run_analysis_multiple_periods(shape_name,L,slope,qD,label):
 
 def run_analysis(shape_name, L, slope, qD, label, duration):
     i_variable = np.linspace(1,16,50) #np.arange(1,16) #np.linspace(3,9,50) #np.linspace(10, 50, 50)
-    fragility_data_points_path = f'studies/reliability/LAX_Design_analysis/15 min/Fragility_trials_{duration}_{shape_name}/fragility_data_points{1976}.csv'
+    fragility_data_points_path = f'studies/reliability/LAX_Design_analysis/1 hr/Fragility_trials_{duration}_{shape_name}/fragility_data_points{1976}.csv'
     
     # Ensure the directory exists
     os.makedirs(os.path.dirname(fragility_data_points_path), exist_ok=True)
@@ -73,7 +73,7 @@ def run_analysis(shape_name, L, slope, qD, label, duration):
         fragility_data_points.write('\n')
         for IM in i_variable:
             print('intensity', IM)
-            output_path = f'studies/reliability/LAX_Design_analysis/15 min/Fragility_trials_{duration}_{shape_name}/{IM}_{1976}.csv'
+            output_path = f'studies/reliability/LAX_Design_analysis/1 hr/Fragility_trials_{duration}_{shape_name}/{IM}_{1976}.csv'
             
             # Ensure the directory exists
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -147,10 +147,10 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         # df = pd.read_csv(os.path.join(os.getcwd(),f'studies/reliability/SB performance period fragility risk hazard/final_precipitation_intensity_data.xlsx - Sheet1.csv'))
         # mean_intensity = moving_window_mean(df, duration, window)
 
-        df_mean = pd.read_csv(os.path.join(os.getcwd(),f'studies/reliability/LAX_Design_analysis/15 min/mean_intensity_conf_interval.csv'))
+        df_mean = pd.read_csv(os.path.join(os.getcwd(),f'studies/reliability/LAX_Design_analysis/1 hr/mean_intensity_conf_interval.csv'))
         df_mean.set_index('Dur (hr)', inplace=True)
 
-        df_95_percentile = pd.read_csv(os.path.join(os.getcwd(),f'studies/reliability/LAX_Design_analysis/15 min/95_percent_intensity_conf_interval.csv'))
+        df_95_percentile = pd.read_csv(os.path.join(os.getcwd(),f'studies/reliability/LAX_Design_analysis/1 hr/95_percent_intensity_conf_interval.csv'))
         df_95_percentile.set_index('Dur (hr)', inplace=True)
 
         # rate['Denver'] = mean_intensity
@@ -700,5 +700,5 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         plt.xlabel('Normalized Water Volume, $V/SL$ (mm)')
 
         # plt.savefig('MCtrials.pdf',bbox_inches='tight')
-        plt.savefig(f'studies/reliability/LAX_Design_analysis/15 min/Fragility_trials_{duration}_{shape_name}/{IM}_1976.png', bbox_inches='tight')   
+        plt.savefig(f'studies/reliability/LAX_Design_analysis/1 hr/Fragility_trials_{duration}_{shape_name}/{IM}_1976.png', bbox_inches='tight')   
         # plt.show()

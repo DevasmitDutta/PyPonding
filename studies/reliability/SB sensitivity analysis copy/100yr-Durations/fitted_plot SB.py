@@ -8,7 +8,7 @@ import matplotlib.colors as mcolors
 from mle_fit import fn_mle_pc
 from scipy.stats import norm, binom
 
-durations = ['x0.25hr','x0.50hr','x1hr','x2hr','x3hr']
+durations = ['x0.25hr','x1hr','x2hr','x3hr']
 num_durations = len(durations)
 
 # Define a dark color palette

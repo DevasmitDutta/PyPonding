@@ -53,7 +53,7 @@ class PondingLoadCell2d_OPS(PondingLoadCell2d):
 
 upper_limit = 0    
 
-durations = ['x0.25hr','x0.50hr','x1hr','x2hr','x3hr']
+durations = ['x0.25hr','x1hr','x2hr','x3hr']
 def run_analysis_multiple_periods(shape_name,L,slope,qD,label):
    for duration in durations:
        run_analysis(shape_name,L,slope,qD,label,duration)
@@ -243,6 +243,43 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         for method in methods:
             zw_lim[method] = wf_section.maximum_permitted_zw(method)
             #ds[method] = zw_lim[method] - dh # Now computed in ReadMonteCarlo.py
+
+        print('\n -------------Showing strength ratio useful for design purposes ----------\n')
+
+        wf_section_1 = wf_section
+        wf_section_1.zj = 0.0*L
+        zw_lim_1 = {}
+        zw_lim_1['DAMP'] = wf_section_1.maximum_permitted_zw('DAMP')
+        design_z = 2 + (1.5*(rate['Denver']*As)/(cd*ws*(2*g)**0.5))**(2.0/3)#3.14
+        preliminary_design_step_SR_ratio_for_a_given_z = wf_section_1.preliminary_design_step_SR_ratio_for_a_given_z(design_z)
+        print('preliminary_step_without_slope_SR_ratio_for_a_given_z\n',preliminary_design_step_SR_ratio_for_a_given_z,'at z=%0.3f in' % design_z)
+
+        wf_section_2 = wf_section
+        wf_section_2.zj = 0.0*L
+        # zw_lim_2 = {}
+        # zw_lim_2['DAMP'] = wf_section_2.maximum_permitted_zw('DAMP')
+        design_z = 2 + (1.5*(rate['Denver']*As)/(cd*ws*(2*g)**0.5))**(2.0/3) #3.14
+        ponding_instability_step_without_slope_SR_ratio_for_a_given_z = wf_section_2.SR_ratio_for_a_given_z(design_z)
+        print('ponding_instability_step_without_slope_SR_ratio_for_a_given_z\n',ponding_instability_step_without_slope_SR_ratio_for_a_given_z,'at z=%0.3f in' % design_z)
+
+        wf_section_3 = wf_section
+        wf_section_3.zj = slope*L
+        zw_lim_3 = {}
+        zw_lim_3['DAMP'] = wf_section_3.maximum_permitted_zw('DAMP')
+        design_z = 2 + (1.5*(rate['Denver']*As)/(cd*ws*(2*g)**0.5))**(2.0/3) #3.14
+        preliminary_design_step_SR_ratio_for_a_given_z = wf_section_3.preliminary_design_step_SR_ratio_for_a_given_z(design_z)
+        print('preliminary_step_with_slope_SR_ratio_for_a_given_z\n',preliminary_design_step_SR_ratio_for_a_given_z,'at z=%0.3f in' % design_z)
+        
+        wf_section_4 = wf_section
+        wf_section_4.zj = slope*L
+        # zw_lim_4 = {}
+        # zw_lim_4['DAMP'] = wf_section_4.maximum_permitted_zw('DAMP')
+        design_z = 2 + (1.5*(rate['Denver']*As)/(cd*ws*(2*g)**0.5))**(2.0/3) #3.14
+        ponding_instability_step_with_slope_SR_ratio_for_a_given_z = wf_section_4.SR_ratio_for_a_given_z(design_z)
+        print('ponding_instability_step_with_slope_SR_ratio_for_a_given_z',ponding_instability_step_with_slope_SR_ratio_for_a_given_z,'at z=%0.3f in' % design_z)
+        print('rate',rate['Denver'])
+        # exit()    
+    
 
         max_volume = (300*inch)*Atrib
 

@@ -292,7 +292,7 @@ def fragility_assessment_copy(shape_name,L,slope,qD,label, IM, output, fragility
         ponding_instability_step_with_slope_SR_ratio_for_a_given_z = wf_section_4.SR_ratio_for_a_given_z(design_z)
         print('ponding_instability_step_with_slope_SR_ratio_for_a_given_z',ponding_instability_step_with_slope_SR_ratio_for_a_given_z,'at z=%0.3f in' % design_z)
         print('rate',rate['Denver'])
-        exit()        
+        # exit()        
 
 
         max_volume = (300*inch)*Atrib
