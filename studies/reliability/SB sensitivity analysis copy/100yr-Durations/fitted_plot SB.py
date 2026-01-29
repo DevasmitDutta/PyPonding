@@ -64,49 +64,65 @@ def fn_mle_pc(IM, num_gms, num_collapse, filter_data=True):
 
 # --- Main execution ---
 durations = ['x0.25hr','x1hr','x2hr','x3hr']
-# shape_name = ['W16X26','W12X22','W8X24','W10X15']
 dark_colors = list(mcolors.TABLEAU_COLORS.values())[:len(durations)]
 
 for i, duration in enumerate(durations):
-    # for j, shape in enumerate(shape_name):
-        plt.figure(figsize=(20, 12))
-        data_1 = pd.read_csv(
-            os.path.join(os.getcwd(),
-                         f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/Fragility_trials_{duration}/fragility_data_points1976.csv')
-        )
 
-        IM = np.linspace(1, 16, 50)
-        num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
-        num_gms = np.full(len(num_collapse), 200)
+    plt.figure(figsize=(20, 12))
+    data_1 = pd.read_csv(
+        os.path.join(os.getcwd(),
+                     f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/'
+                     f'Fragility_trials_{duration}/fragility_data_points1976.csv')
+    )
 
-        # Fit fragility with filtering
-        mu_opt, sigma_opt, (IM_filt, num_gms_filt, num_collapse_filt) = fn_mle_pc(
-            IM, num_gms, num_collapse, filter_data=True
-        )
+    IM = np.linspace(1, 16, 50)
+    num_collapse = data_1[duration][~np.isnan(data_1[duration])].values * 200
+    num_gms = np.full(len(num_collapse), 200)
 
-        # Scatter: filtered points only
-        plt.scatter(IM_filt, num_collapse_filt / num_gms_filt,
-                    color=dark_colors[i], marker='^', s=50,
-                    label=f'Filtered Data ({duration})')
+    # Fit fragility with filtering
+    mu_opt, sigma_opt, (IM_filt, num_gms_filt, num_collapse_filt) = fn_mle_pc(
+        IM, num_gms, num_collapse, filter_data=True
+    )
 
-        # Plot fitted curve
-        IM_plot = np.linspace(0.1, 20, 200)
-        p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
-        plt.plot(IM_plot, p_fit, color=dark_colors[i], linestyle='--',
-                 label=f'Fitted Lognormal CDF ({duration})\nlog_mean={mu_opt:.3f}, log_stdev={sigma_opt:.3f}')
+    # ============================
+    # SAVE (IM_filt, prob_filt)
+    # ============================
+    prob_filt = num_collapse_filt / num_gms_filt
+    save_df = pd.DataFrame({
+        'IM': IM_filt,
+        'probability': prob_filt
+    })
 
-        plt.xlabel('IM')
-        plt.ylabel('Probability of Limit State of Exceedance')
-        # Ensure output directory exists
-        out_dir = f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/Fragility_fit_median_{duration}'
-        os.makedirs(out_dir, exist_ok=True)
+    out_dir = (
+        f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/'
+        f'Fragility_fit_median_{duration}'
+    )
+    os.makedirs(out_dir, exist_ok=True)
 
-        plt.title(f'Fragility Function Fitting (100yr return period) - Santa Barbara ({duration} duration)')
-        plt.legend(loc='best', fontsize=8)
-        plt.grid(True)
-        plt.savefig(f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/Fragility_fit_median_{duration}/fitted_plot.png')
-        plt.show()
+    save_df.to_csv(
+        os.path.join(out_dir, 'IM_prob_filtered.csv'),
+        index=False
+    )
 
-        print(f"Duration: {duration}")
-        print(f"Log-Mean (mu): {mu_opt:.4f}")
-        print(f"Log-StdDev (sigma): {sigma_opt:.4f}")
+    # Scatter: filtered points only
+    plt.scatter(IM_filt, prob_filt,
+                color=dark_colors[i], marker='^', s=50,
+                label=f'Filtered Data ({duration})')
+
+    # Plot fitted curve
+    IM_plot = np.linspace(0.1, 20, 200)
+    p_fit = norm.cdf(np.log(IM_plot), loc=mu_opt, scale=sigma_opt)
+    plt.plot(IM_plot, p_fit, color=dark_colors[i], linestyle='--',
+             label=f'Fitted Lognormal CDF ({duration})\nlog_mean={mu_opt:.3f}, log_stdev={sigma_opt:.3f}')
+
+    plt.xlabel('IM')
+    plt.ylabel('Probability of Limit State of Exceedance')
+    plt.title(f'Fragility Function Fitting (100yr return period) - Santa Barbara ({duration} duration)')
+    plt.legend(loc='best', fontsize=8)
+    plt.grid(True)
+    plt.savefig(os.path.join(out_dir, 'fitted_plot.png'))
+    plt.show()
+
+    print(f"Duration: {duration}")
+    print(f"Log-Mean (mu): {mu_opt:.4f}")
+    print(f"Log-StdDev (sigma): {sigma_opt:.4f}")
