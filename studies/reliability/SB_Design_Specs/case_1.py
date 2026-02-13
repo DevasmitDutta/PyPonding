@@ -147,7 +147,7 @@ dhnom = {}
 for city in locations:
     q = rate[city]*As
     dhnom[city] = (1.5*q/(cd*ws*(2*g)**0.5))**(2.0/3)
-    print('dhnom in',dhnom,'i in/hr',rate[city],'As in',As,'Ss in',Ss,'L in',L,'q in^3/hr',As*rate[city],'cd',cd,'ws in',ws,'g in/hr^2',g)
+    print('dhnom in ',dhnom,'i in/hr ',rate[city],'As in ',As,'Ss in ',Ss,'L in ',L,'q in^3/hr ',As*rate[city],'cd ',cd,'ws in ',ws,'g in/hr^2 ',g)
 
 # methods = ['AISC Appendix 2','DAMP','Proposed for ASCE 7','Neglect Ponding']
 ds = {}
