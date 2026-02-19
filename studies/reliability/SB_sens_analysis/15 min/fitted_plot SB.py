@@ -10,7 +10,7 @@ from scipy.stats import norm, binom
 
 durations = ['100yr']
 
-shape_name = ['W8X18']
+shape_name = ['W14X26']
 
 num_durations = len(durations)
 
@@ -22,7 +22,8 @@ dark_colors = list(mcolors.TABLEAU_COLORS.values())[:num_durations]
 for i, duration in enumerate(durations):
     # for j, shape in enumerate(shape_name[i]):
     for j, shape in enumerate(shape_name):
-       for param_comb in ['0.5_1_1','0.25_1_1','0.75_1_1','1_0.5_1','1_0.25_1','1_0.75_1','1_1_1.5','1_1_1.25','1_1_2']:
+    #    for param_comb in ['0.5_1_1','0.25_1_1','0.75_1_1','1_0.5_1','1_0.25_1','1_0.75_1','1_1_1.5','1_1_1.25','1_1_2']:
+      for param_comb in ['1_0.5_1','1_0.25_1','1_0.75_1','1_1_1.5','1_1_1.25','1_1_2']: 
         # Create a new figure for each duration and shape
         plt.figure(figsize=(20, 12))
 
