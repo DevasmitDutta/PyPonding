@@ -71,7 +71,7 @@ for i, duration in enumerate(durations):
     plt.figure(figsize=(20, 12))
     data_1 = pd.read_csv(
         os.path.join(os.getcwd(),
-                     f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/'
+                     f'studies/reliability/median_fit_w14x22/100yr-Durations/'
                      f'Fragility_trials_{duration}/fragility_data_points1976.csv')
     )
 
@@ -94,7 +94,7 @@ for i, duration in enumerate(durations):
     })
 
     out_dir = (
-        f'studies/reliability/SB sensitivity analysis copy/100yr-Durations/'
+        f'studies/reliability/median_fit_w14x22/100yr-Durations/'
         f'Fragility_fit_median_{duration}'
     )
     os.makedirs(out_dir, exist_ok=True)
