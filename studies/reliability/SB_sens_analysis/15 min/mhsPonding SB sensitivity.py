@@ -7,11 +7,12 @@ from matplotlib.pylab import gamma
 
 exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/SB_sens_analysis/15 min/fragility_assessment SB sensitivity.py').read())
 # '10x17'
-for shape in ['W14X26']:
+for shape in ['W12X19','W8X18']:
 # [0.75, 0.5, 0.25] # [1.25, 1.5, 2]
   for beta in [1]:
-      for gamm in [0.75, 0.5, 0.25]:
-         for alpha in [1]:
+      # for gamm in [0.75, 0.5, 0.25]:
+      for gamm in [1]:
+         for alpha in [2.5, 3, 3.5]:
 
 
             run_analysis_multiple_periods(shape,360.0,0.020833333333333332,6.944444444444444e-05,1976,beta, gamm, alpha)

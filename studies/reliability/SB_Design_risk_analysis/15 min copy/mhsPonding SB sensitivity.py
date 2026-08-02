@@ -4,7 +4,7 @@
 
 exec(open('/home/devasmit/Desktop/PyPonding/studies/reliability/SB_Design_risk_analysis/15 min copy/fragility_assessment SB sensitivity.py').read())
 # '10x17'
-for shape in ['W14X22']:
+for shape in ['W8X18']:
 # for shape in ['W10X39','W10X22','W8X21','W10X15']:
 
 
